@@ -23,12 +23,16 @@ Ini* ini_new()
 
 Ini* ini_read(FILE* file)
 {
-	Ini* ini = ini_new();
-	if (ini == NULL) {
+	Ini* ini;
+	char* line;
+
+	if ((ini = ini_new()) == NULL) {
 		return NULL;
 	}
 
-	// TODO: file read.
+	while ((line = freadline(file)) != NULL) {
+		free(line);
+	}
 
 	return ini;
 }
