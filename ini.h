@@ -15,7 +15,7 @@ typedef struct Ini Ini;
  * @brief 空の Ini オブジェクトを作成する。
  * @return 空の Ini オブジェクト。失敗時は NULL を返す。
  */
-Ini* ini_new();
+Ini* ini_new(void);
 
 /**
  * @brief INI ファイルを読んで、 Ini オブジェクトを作成する。

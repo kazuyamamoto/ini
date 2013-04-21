@@ -14,13 +14,13 @@
 
 /* キー */
 typedef struct {
-	char* name;
-	char* value;
+	char *name;
+	char *value;
 } Key;
 
 /* セクション */
 typedef struct {
-	char* name;
+	char *name;
 	size_t numkeys;
 	Key *keys;
 } Section;
@@ -28,10 +28,13 @@ typedef struct {
 /* INI 全体 */
 struct Ini {
 	size_t numsections;
-	Section* sections;
+	Section *sections;
 };
 
-Ini* ini_new()
+static char *parse_sectionname(const char *line);
+static Section* section_new(void);
+
+Ini* ini_new(void)
 {
 	Ini* ini = malloc(sizeof *ini);
 	if (ini == NULL) {
@@ -43,32 +46,47 @@ Ini* ini_new()
 	return ini;
 }
 
-Ini* ini_read(FILE* file)
+/* TODO エラー通知 */
+Ini *ini_read(FILE *file)
 {
-	Ini* ini = ini_new();
-	char* line;
+	Ini *ini;
+	char *line;
+	char *sectionname;
+	Section* section;
 
-	if (ini == NULL) {
+	if ((ini = ini_new()) == NULL) {
 		return NULL;
 	}
 
-	while ((line = freadline(file)) != NULL) {
-		free(line);
+	/* 最初はセクションが来る */
+	if ((line = freadline(file)) == NULL) {
+		goto ERROR;
 	}
-	if (ferror(file)) {
+	if ((sectionname = parse_sectionname(line)) == NULL) {
 		free(line);
-		return NULL;
+		goto ERROR;
 	}
+	free(line);
+	if ((section = section_new()) == NULL) {
+		goto ERROR;
+	}
+	section->name = sectionname;
+	ini->numsections = 1;
+	ini->sections = section;
 
 	return ini;
+
+ERROR:
+	ini_delete(ini);
+	return NULL;
 }
 
-void ini_delete(Ini* ini)
+void ini_delete(Ini *ini)
 {
 	free(ini);
 }
 
-char* ini_get(const Ini* ini, const char* section, const char* name)
+char *ini_get(const Ini *ini, const char *section, const char *name)
 {
 	if (ini == NULL || section == NULL || name == NULL) {
 		errno = EINVAL;
@@ -78,10 +96,10 @@ char* ini_get(const Ini* ini, const char* section, const char* name)
 	return NULL;
 }
 
-char* parse_section(const char* line)
+static char *parse_sectionname(const char *line)
 {
 	enum { BEFORE, OPEN, NAME, CLOSE, AFTER } state = BEFORE;
-	char* section = NULL;
+	char *sectionname = NULL;
 	size_t num = 0;
 	int i;
 
@@ -114,10 +132,24 @@ char* parse_section(const char* line)
 		}
 	}
 
-	if ((section = malloc(num + 1)) == NULL) {
+	if ((sectionname = malloc(num + 1)) == NULL) {
 		return NULL;
 	}
-	memcpy(section, line + 1, num);
-	section[num] = '\0';
+	memcpy(sectionname, line + 1, num);
+	sectionname[num] = '\0';
+	return sectionname;
+}
+
+static Section* section_new(void)
+{
+	Section *section = malloc(sizeof *section);
+	if (section == NULL) {
+		return NULL;
+	}
+
+	section->name = NULL;
+	section->numkeys = 0;
+	section->keys = NULL;
+
 	return section;
 }
