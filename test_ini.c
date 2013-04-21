@@ -36,8 +36,8 @@ static void test_ini_get(void)
 	fclose(file);
 	PCU_ASSERT_PTR_NOT_NULL(ini);
 
-	value = ini_get(ini, "abc", "def");
-	PCU_ASSERT_STRING_EQUAL(value, "ghi");
+	value = ini_get(ini, "Section", "Key");
+	PCU_ASSERT_STRING_EQUAL(value, "Value");
 
 	ini_delete(ini);
 }
