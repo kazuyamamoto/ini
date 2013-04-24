@@ -4,7 +4,7 @@
  */
 
 #include "ini.h"
-#include "futil.h"
+#include "sutil.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -46,8 +46,7 @@ Ini* ini_new(void)
 	return ini;
 }
 
-/* TODO エラー通知 */
-Ini *ini_read(FILE *file)
+Ini *ini_parse(const char* data)
 {
 	Ini *ini;
 	char *line;
@@ -59,7 +58,7 @@ Ini *ini_read(FILE *file)
 	}
 
 	/* 最初はセクションが来る */
-	if ((line = freadline(file)) == NULL) {
+	if ((line = sgetline(data)) == NULL) {
 		goto ERROR;
 	}
 	if ((sectionname = parse_sectionname(line)) == NULL) {

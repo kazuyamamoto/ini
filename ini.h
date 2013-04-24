@@ -6,8 +6,9 @@
 #ifndef INI_H
 #define INI_H
 
-#include <stdio.h>
-
+/**
+ * @brief INI データを表す。
+ */
 struct Ini;
 typedef struct Ini Ini;
 
@@ -18,21 +19,17 @@ typedef struct Ini Ini;
 Ini* ini_new(void);
 
 /**
- * @brief INI ファイルを読んで、 Ini オブジェクトを作成する。
- * @param[in,out] file オープン済みの INI ファイル。
- * @return INI ファイルの内容を持つ Ini オブジェクト。失敗時は NULL を返す。
+ * @brief INI データを解釈して、 Ini オブジェクトを作成する。
+ * @param[in] data 解釈する INI データ。
+ * @return INI ファイルの内容を持つ Ini オブジェクト。
+ * 失敗時は NULL を返す。
  */
-Ini* ini_read(FILE* file);
+Ini* ini_parse(const char* data);
 
 /**
  * @brief Ini オブジェクトに割り当てられたメモリを解放する。
  */
 void ini_delete(Ini* ini);
-
-/**
- * @brief Ini オブジェクトの内容をファイルに書き出す。
- */
-int ini_write(const Ini* ini, FILE* file);
 
 /**
  * @brief 指定したセクションとキーから値を取得する。
@@ -44,10 +41,5 @@ int ini_write(const Ini* ini, FILE* file);
  * 存在しない場合は NULL 。
  */
 char* ini_get(const Ini* ini, const char* section, const char* name);
-
-/**
- * @brief 指定したセクションと名前で値を設定する。
- */
-int ini_put(const Ini* ini, const char* section, const char* key, const char* value);
 
 #endif	/* INI_H */
