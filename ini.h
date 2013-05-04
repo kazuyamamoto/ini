@@ -14,15 +14,18 @@ typedef struct Ini Ini;
 
 /**
  * @brief 空の Ini オブジェクトを作成する。
- * @return 空の Ini オブジェクト。失敗時は NULL を返す。
+ * @return 空の Ini オブジェクト。
+ * 不要になった場合は ini_delete() でメモリを解放すること。
+ * 失敗時は NULL を返し errno を設定する。
  */
 Ini* ini_new(void);
 
 /**
  * @brief INI データを解釈して、 Ini オブジェクトを作成する。
- * @param[in] data 解釈する INI データ。
+ * @param[in] data 解釈する対象となる INI データ。
  * @return INI ファイルの内容を持つ Ini オブジェクト。
- * 失敗時は NULL を返す。
+ * 不要になった場合は ini_delete() でメモリを解放すること。
+ * 失敗時は NULL を返し errno を設定する。
  */
 Ini* ini_parse(const char* data);
 

@@ -31,7 +31,7 @@ static void test_ini_get(void)
 	PCU_ASSERT_PTR_NOT_NULL(ini);
 
 	value = ini_get(ini, "Section", "Key");
-	PCU_ASSERT_STRING_EQUAL(value, "Value");
+	PCU_ASSERT_STRING_EQUAL("Value", value);
 
 	ini_delete(ini);
 }
@@ -43,7 +43,7 @@ PCU_Suite *test_ini_suite(void)
 		PCU_TEST(test_ini_get),
 	};
 	static PCU_Suite suite = {
-		"ini_test", tests, sizeof tests / sizeof tests[0], setup, teardown, initialize, cleanup
+		"test_ini", tests, sizeof tests / sizeof tests[0], setup, teardown, initialize, cleanup
 	};
 	return &suite;
 }

@@ -43,6 +43,7 @@ Ini* ini_new(void)
 
 	ini->numsections = 0;
 	ini->sections = NULL;
+
 	return ini;
 }
 
@@ -52,13 +53,19 @@ Ini *ini_parse(const char* data)
 	char *line;
 	char *sectionname;
 	Section* section;
+	const char *next;
+
+	if (data == NULL) {
+		errno = EINVAL;
+		return NULL;
+	}
 
 	if ((ini = ini_new()) == NULL) {
 		return NULL;
 	}
 
 	/* 最初はセクションが来る */
-	if ((line = sgetline(data)) == NULL) {
+	if ((line = sgetline(data, &next)) == NULL) {
 		goto ERROR;
 	}
 	if ((sectionname = parse_sectionname(line)) == NULL) {
