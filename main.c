@@ -9,8 +9,8 @@ int main(int argc, char *argv[])
 {
 	const PCU_SuiteMethod suites[] = {
 		test_futil_suite,
-		test_ini_suite,
 		test_sutil_suite,
+		test_ini_suite,
 	};
 	PCU_set_putchar(putchar);
 	PCU_set_getchar(getchar);
