@@ -7,7 +7,10 @@ TARGET = alltests
 OBJS = main.o
 OBJS += ini.o
 OBJS += sutil.o
+OBJS += futil.o
 OBJS += test_ini.o
+OBJS += test_sutil.o
+OBJS += test_futil.o
 
 
 .PHONY: all clean pcunit_register test

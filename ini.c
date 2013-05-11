@@ -64,10 +64,11 @@ Ini *ini_parse(const char* data)
 		return NULL;
 	}
 
-	/* 最初はセクションが来る */
 	if ((line = sgetline(data, &next)) == NULL) {
-		goto ERROR;
+		return ini;
 	}
+
+	/* 最初はセクションが来る */
 	if ((sectionname = parse_sectionname(line)) == NULL) {
 		free(line);
 		goto ERROR;
@@ -89,6 +90,7 @@ ERROR:
 
 void ini_delete(Ini *ini)
 {
+	/* TODO: implement  */
 	free(ini);
 }
 
@@ -98,6 +100,8 @@ char *ini_get(const Ini *ini, const char *section, const char *name)
 		errno = EINVAL;
 		return NULL;
 	}
+
+	/* TODO: implement */
 
 	return NULL;
 }
