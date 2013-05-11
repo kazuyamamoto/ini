@@ -1,5 +1,6 @@
 #include "PCUnit/PCUnit.h"
 #include "ini.h"
+#include <stddef.h>
 
 static int initialize(void)
 {
@@ -26,8 +27,9 @@ static void test_ini_get(void)
 {
 	Ini* ini;
 	const char* value;
+	size_t errline;
 
-	ini = ini_parse("[Section]\nKey=Value");
+	ini = ini_parse("[Section]\nKey=Value", &errline);
 	PCU_ASSERT_PTR_NOT_NULL(ini);
 
 	value = ini_get(ini, "Section", "Key");

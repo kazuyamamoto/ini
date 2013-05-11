@@ -37,3 +37,8 @@ clean:
 	cd PCUnit && $(MAKE) clean
 	rm -f *.o $(TARGET)
 
+main.o: ini.h
+ini.o: ini.h sutil.h
+test_ini.o: ini.h
+sutil.o: sutil.h
+test_sutil.o: sutil.h

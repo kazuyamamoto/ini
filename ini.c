@@ -13,26 +13,22 @@
 #include <assert.h>
 
 /* キー */
-typedef struct {
-	char *name;
-	char *value;
-} Key;
+struct Key;
+typedef struct Key Key;
 
 /* セクション */
-typedef struct {
-	char *name;
-	size_t numkeys;
-	Key *keys;
-} Section;
+struct Section;
+typedef struct Section Section;
 
-/* INI 全体 */
+/* INI */
 struct Ini {
-	size_t numsections;
-	Section *sections;
+	size_t nsections;
+	Section **sections;
 };
 
 static char *parse_sectionname(const char *line);
-static Section* section_new(void);
+static Section *section_new(char *name);
+static Ini *ini_add_section(Ini *ini, Section *section);
 
 Ini* ini_new(void)
 {
@@ -41,13 +37,12 @@ Ini* ini_new(void)
 		return NULL;
 	}
 
-	ini->numsections = 0;
+	ini->nsections = 0;
 	ini->sections = NULL;
-
 	return ini;
 }
 
-Ini *ini_parse(const char* data)
+Ini *ini_parse(const char* data, size_t* errline)
 {
 	Ini *ini;
 	char *line;
@@ -55,8 +50,7 @@ Ini *ini_parse(const char* data)
 	Section* section;
 	const char *next;
 
-	if (data == NULL) {
-		errno = EINVAL;
+	if (data == NULL || errline == NULL) {
 		return NULL;
 	}
 
@@ -74,12 +68,11 @@ Ini *ini_parse(const char* data)
 		goto ERROR;
 	}
 	free(line);
-	if ((section = section_new()) == NULL) {
-		goto ERROR;
+
+	if ((section = section_new(sectionname)) == NULL) {
+	   goto ERROR;
 	}
-	section->name = sectionname;
-	ini->numsections = 1;
-	ini->sections = section;
+	ini_add_section(ini, section);
 
 	return ini;
 
@@ -106,6 +99,8 @@ char *ini_get(const Ini *ini, const char *section, const char *name)
 	return NULL;
 }
 
+/* セクション名を解釈して取得する。
+ * 例えば "[abc]" を解釈して "abc" を取得する。 */
 static char *parse_sectionname(const char *line)
 {
 	enum { BEFORE, OPEN, NAME, CLOSE, AFTER } state = BEFORE;
@@ -150,16 +145,46 @@ static char *parse_sectionname(const char *line)
 	return sectionname;
 }
 
-static Section* section_new(void)
+static Ini* ini_add_section(Ini *ini, Section *section)
+{
+	if (ini->nsections) {
+		Section **tmp;
+		if ((tmp = realloc(ini->sections, sizeof(Section*) * (ini->nsections + 1))) == NULL) {
+			return NULL;
+		} else {
+			ini->sections[ini->nsections] = section;
+			ini->nsections++;
+			return ini;
+		}
+	} else {
+		if ((ini->sections = malloc(sizeof section)) == NULL) {
+			return NULL;
+		} else {
+			ini->nsections = 1;
+			ini->sections[0] = section;
+			return ini;
+		}
+	}
+}
+
+/* セクション */
+struct Section {
+	char *name;
+	size_t numkeys;
+	Key *keys;
+};
+
+static Section* section_new(char *name)
 {
 	Section *section = malloc(sizeof *section);
 	if (section == NULL) {
 		return NULL;
 	}
 
-	section->name = NULL;
+	section->name = name;
 	section->numkeys = 0;
 	section->keys = NULL;
 
 	return section;
 }
+
