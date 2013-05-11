@@ -19,15 +19,15 @@ typedef struct Key Key;
 /* セクション */
 struct Section;
 typedef struct Section Section;
+static Section *section_new(char *name);
+static void section_delete(Section *section);
 
 /* INI */
 struct Ini {
 	size_t nsections;
 	Section **sections;
 };
-
 static char *parse_sectionname(const char *line);
-static Section *section_new(char *name);
 static Ini *ini_add_section(Ini *ini, Section *section);
 
 Ini* ini_new(void)
@@ -83,7 +83,10 @@ ERROR:
 
 void ini_delete(Ini *ini)
 {
-	/* TODO: implement  */
+	int i;
+	for (i = 0; i < ini->nsections; i++) {
+		section_delete(ini->sections[i]);
+	}
 	free(ini);
 }
 
@@ -145,6 +148,7 @@ static char *parse_sectionname(const char *line)
 	return sectionname;
 }
 
+/* Ini オブエジェクトにセクションオブジェクトを追加する */
 static Ini* ini_add_section(Ini *ini, Section *section)
 {
 	if (ini->nsections) {
@@ -170,10 +174,11 @@ static Ini* ini_add_section(Ini *ini, Section *section)
 /* セクション */
 struct Section {
 	char *name;
-	size_t numkeys;
+	size_t nkeys;
 	Key *keys;
 };
 
+/* セクションオブジェクトの初期化 */
 static Section* section_new(char *name)
 {
 	Section *section = malloc(sizeof *section);
@@ -182,9 +187,15 @@ static Section* section_new(char *name)
 	}
 
 	section->name = name;
-	section->numkeys = 0;
+	section->nkeys = 0;
 	section->keys = NULL;
-
 	return section;
 }
 
+/* セクションオブジェクトの解放 */
+static void section_delete(Section *section)
+{
+	free(section->name);
+	free(section);
+	/* TODO: free keys */
+}
