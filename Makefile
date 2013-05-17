@@ -9,6 +9,7 @@ OBJS += ini.o
 OBJS += sutil.o
 OBJS += test_ini.o
 OBJS += test_sutil.o
+OBJS += section.o
 
 
 .PHONY: all clean pcunit_register test
