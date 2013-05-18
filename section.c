@@ -3,16 +3,12 @@
  * @brief INI ファイルのセクション部分処理の実装。
  */
 
+#include "key.h"
 #include "section.h"
 #include <stddef.h>
 #include <ctype.h>
-#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-
-/* キー(あとでkey.hに移動) */
-struct Key;
-typedef struct Key Key;
 
 struct Section {
 	char *name;
@@ -24,8 +20,7 @@ char *parse_sectionname(const char *line)
 {
 	enum { BEFORE, OPEN, NAME, CLOSE, AFTER } state = BEFORE;
 	char *sectionname = NULL;
-	size_t num = 0;
-	int i;
+	size_t len = 0, i;
 
 	if (line == NULL) {
 		return NULL;
@@ -41,9 +36,9 @@ char *parse_sectionname(const char *line)
 		} else if (isalnum((int)line[i])) {
 			if (state == OPEN) {
 				state = NAME;
-				num = 1;
+				len = 1;
 			} else if (state == NAME) {
-				num++;
+				len++;
 			} else {
 				return NULL;
 			}
@@ -59,11 +54,11 @@ char *parse_sectionname(const char *line)
 	}
 
 	/* セクション名の取り出し */
-	if ((sectionname = malloc(num + 1)) == NULL) {
+	if ((sectionname = malloc(len + 1)) == NULL) {
 		return NULL;
 	}
-	memcpy(sectionname, line + 1, num);
-	sectionname[num] = '\0';
+	memcpy(sectionname, line + 1, len);
+	sectionname[len] = '\0';
 	return sectionname;
 }
 

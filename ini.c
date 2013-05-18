@@ -30,7 +30,7 @@ Ini* ini_new(void)
 	return ini;
 }
 
-Ini *ini_parse(const char* data, size_t* errline)
+Ini *ini_parse(const char *data, size_t *errline)
 {
 	Ini *ini;
 	char *line;

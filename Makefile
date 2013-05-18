@@ -11,6 +11,8 @@ OBJS += test_sutil.o
 OBJS += sutil.o
 OBJS += section.o
 OBJS += test_section.o
+OBJS += key.o
+OBJS += test_key.o
 
 .PHONY: all clean pcunit_register test
 
