@@ -6,11 +6,11 @@ LFLAGS = -LPCUnit -lpcunit
 TARGET = alltests
 OBJS = main.o
 OBJS += ini.o
-OBJS += sutil.o
 OBJS += test_ini.o
 OBJS += test_sutil.o
+OBJS += sutil.o
 OBJS += section.o
-
+OBJS += test_section.o
 
 .PHONY: all clean pcunit_register test
 

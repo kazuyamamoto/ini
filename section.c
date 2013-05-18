@@ -27,7 +27,9 @@ char *parse_sectionname(const char *line)
 	size_t num = 0;
 	int i;
 
-	assert(line);
+	if (line == NULL) {
+		return NULL;
+	}
 
 	for (i = 0; i < strlen(line); i++) {
 		if (line[i] == '[') {
@@ -56,6 +58,7 @@ char *parse_sectionname(const char *line)
 		}
 	}
 
+	/* セクション名の取り出し */
 	if ((sectionname = malloc(num + 1)) == NULL) {
 		return NULL;
 	}
