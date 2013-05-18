@@ -25,4 +25,14 @@ Key *key_parse(const char *line);
  */
 void key_delete(Key* key);
 
+/**
+ * @brief 名前を取得する。
+ */
+const char* key_name(Key* key);
+
+/**
+ * @brief 値を取得する。
+ */
+const char* key_value(Key* key);
+
 #endif /* KEY_H*/

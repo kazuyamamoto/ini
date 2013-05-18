@@ -29,12 +29,23 @@ static int teardown(void)
 
 void test_key_parse(void)
 {
-	PCU_FAIL("TODO: implement!");
+	Key* key = key_parse("Name=Value");
+	PCU_ASSERT_PTR_NOT_NULL(key);
+	PCU_ASSERT_STRING_EQUAL("Name", key_name(key));
+	PCU_ASSERT_STRING_EQUAL("Value", key_value(key));
+	key_delete(key);
+}
+
+void test_key_parse_null(void)
+{
+	Key* key = key_parse(NULL);
+	PCU_ASSERT_PTR_NULL(key);
 }
 
 PCU_Suite *test_key_suite(void)
 {
 	static PCU_Test tests[] = {
+		PCU_TEST(test_key_parse_null),
 		PCU_TEST(test_key_parse),
 	};
 	static PCU_Suite suite = {

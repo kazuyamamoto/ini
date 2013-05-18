@@ -108,3 +108,13 @@ void key_delete(Key *key)
 
 	free(key);
 }
+
+const char* key_name(Key *key)
+{
+	return key->name; 
+}
+
+const char* key_value(Key *key)
+{
+	return key->value; 
+}

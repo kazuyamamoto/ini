@@ -18,7 +18,7 @@ struct Ini {
 
 static Ini *ini_add_section(Ini *ini, Section *section);
 
-Ini* ini_new(void)
+Ini *ini_new(void)
 {
 	Ini* ini = malloc(sizeof *ini);
 	if (ini == NULL) {
