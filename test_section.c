@@ -36,6 +36,8 @@ void test_section_parse(void)
 {
 	Section *section = section_parse("[sectionname]");
 	PCU_ASSERT_PTR_NOT_NULL(section);
+	PCU_ASSERT_STRING_EQUAL("sectionname", section_name(section));
+	
 	section_delete(section);
 }
 

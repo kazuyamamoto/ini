@@ -7,7 +7,7 @@
 #define SECTION_H
 
 /**
- * @brief INIファイルのセクション部分
+ * @brief INIファイルのセクション部分のオブジェクト
  */
 struct Section;
 typedef struct Section Section;
@@ -26,5 +26,12 @@ Section *section_parse(const char *s);
  * @param[in,out] section 解放するセクションオブジェクト。
  */
 void section_delete(Section *section);
+
+/**
+ * @brief セクション名を取得する。
+ * @param[in] セクション名を取得するセクションオブジェクト。
+ * @return セクション名
+ */
+const char *section_name(const Section *section);
 
 #endif /* SECTION_H */

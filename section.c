@@ -64,6 +64,7 @@ Section *section_parse(const char *s)
 	memcpy(section_name, s + 1, len);
 	section_name[len] = '\0';
 
+	/* セクションオブジェクトの生成 */
 	if ((section = section_new()) == NULL) {
 		free(section_name);
 		return NULL;
@@ -98,4 +99,9 @@ static Section *section_new(void)
 	section->keys = NULL;
 
 	return section;
+}
+
+const char *section_name(const Section *section)
+{
+	return section->name;
 }
