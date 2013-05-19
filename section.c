@@ -43,6 +43,7 @@ Section *section_parse(const char *s)
 		return NULL;
 	}
 
+	/* セクション名の長さを調べる */
 	for (i = 0; i < strlen(s); i++) {
 		if (s[i] == '[') {
 			if (state == BEFORE) {
@@ -98,7 +99,6 @@ void section_delete(Section *section)
 	free(section->keys);
 	free(section);
 }
-
 
 const char *section_name(const Section *section)
 {

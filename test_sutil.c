@@ -8,26 +8,6 @@
 #include <stdlib.h>
 #include <errno.h>
 
-static int initialize(void)
-{
-	return 0;
-}
-
-static int cleanup(void)
-{
-	return 0;
-}
-
-static int setup(void)
-{
-	return 0;
-}
-
-static int teardown(void)
-{
-	return 0;
-}
-
 /* 引数 next が無いとき、エラーとなること */
 static void test_sgetline_next_null(void)
 {
@@ -35,7 +15,6 @@ static void test_sgetline_next_null(void)
 	char* line;
 
 	line = sgetline(data, NULL);
-
 	PCU_ASSERT_PTR_NULL(line);
 	PCU_ASSERT_EQUAL(EINVAL, errno);
 }
@@ -47,7 +26,6 @@ static void test_sgetline_data_null(void)
 	char* line;
 
 	line = sgetline(NULL, &next);
-
 	PCU_ASSERT_PTR_NULL(line);
 	PCU_ASSERT_EQUAL(EINVAL, errno);
 }
@@ -60,7 +38,6 @@ static void test_sgetline_empty(void)
 	char* line;
 
 	line = sgetline(data, &next);
-
 	PCU_ASSERT_PTR_NULL(line);
 }
 
@@ -72,7 +49,6 @@ static void test_sgetline_oneline(void)
 	char* line;
 
 	line = sgetline(data, &next);
-
 	PCU_ASSERT_PTR_NOT_NULL(line);
 	PCU_ASSERT_STRING_EQUAL("abc", line);
 	PCU_ASSERT_EQUAL('\0', *next);
@@ -88,21 +64,20 @@ static void test_sgetline_multilines(void)
 	char* line;
 
 	line = sgetline(data, &next);
-
 	PCU_ASSERT_PTR_NOT_NULL(line);
 	PCU_ASSERT_STRING_EQUAL("abc", line);
 
 	free(line);
+
 	data = next;
 	line = sgetline(data, &next);
-
 	PCU_ASSERT_PTR_NOT_NULL(line);
 	PCU_ASSERT_STRING_EQUAL("def", line);
 
 	free(line);
+
 	data = next;
 	line = sgetline(data, &next);
-
 	PCU_ASSERT_PTR_NOT_NULL(line);
 	PCU_ASSERT_STRING_EQUAL("ghi", line);
 
@@ -208,7 +183,7 @@ PCU_Suite *test_sutil_suite(void)
 		PCU_TEST(test_strnclone),
 	};
 	static PCU_Suite suite = {
-		"test_sutil", tests, sizeof tests / sizeof tests[0], setup, teardown, initialize, cleanup
+		"test_sutil", tests, sizeof tests / sizeof tests[0]
 	};
 	return &suite;
 }
