@@ -17,7 +17,20 @@ struct Section {
 	Key **keys;
 };
 
-static Section *section_new(void);
+static Section *section_new(void)
+{
+	Section *section;
+
+	if ((section = malloc(sizeof *section)) == NULL) {
+		return NULL;
+	}
+
+	section->name = NULL;
+	section->nkeys = 0;
+	section->keys = NULL;
+
+	return section;
+}
 
 Section *section_parse(const char *s)
 {
@@ -86,20 +99,6 @@ void section_delete(Section *section)
 	free(section);
 }
 
-static Section *section_new(void)
-{
-	Section *section;
-
-	if ((section = malloc(sizeof *section)) == NULL) {
-		return NULL;
-	}
-
-	section->name = NULL;
-	section->nkeys = 0;
-	section->keys = NULL;
-
-	return section;
-}
 
 const char *section_name(const Section *section)
 {

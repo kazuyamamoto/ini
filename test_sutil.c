@@ -1,3 +1,8 @@
+/**
+ * @file test_sutil.c
+ * @brief sutil のユニットテスト
+ */
+
 #include "PCUnit/PCUnit.h"
 #include "sutil.h"
 #include <stdlib.h>
@@ -164,6 +169,28 @@ static void test_strclone(void)
 	free(clone);
 }
 
+static void test_strnclone_null(void)
+{
+	char *clone = strnclone(NULL, 1);
+	PCU_ASSERT_PTR_NULL(clone);
+}
+
+static void test_strnclone_empty(void)
+{
+	char* clone = strnclone("", 0);
+	PCU_ASSERT_PTR_NOT_NULL(clone);
+	PCU_ASSERT_STRING_EQUAL("", clone);
+	free(clone);
+}
+
+static void test_strnclone(void)
+{
+	char* clone = strnclone("abc", 2);
+	PCU_ASSERT_PTR_NOT_NULL(clone);
+	PCU_ASSERT_STRING_EQUAL("ab", clone);
+	free(clone);
+}
+
 PCU_Suite *test_sutil_suite(void)
 {
 	static PCU_Test tests[] = {
@@ -176,6 +203,9 @@ PCU_Suite *test_sutil_suite(void)
 		PCU_TEST(test_strclone_null),
 		PCU_TEST(test_strclone_empty),
 		PCU_TEST(test_strclone),
+		PCU_TEST(test_strnclone_null),
+		PCU_TEST(test_strnclone_empty),
+		PCU_TEST(test_strnclone),
 	};
 	static PCU_Suite suite = {
 		"test_sutil", tests, sizeof tests / sizeof tests[0], setup, teardown, initialize, cleanup

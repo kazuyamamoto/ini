@@ -60,3 +60,22 @@ char *strclone(const char *s)
 	strcpy(clone, s);
 	return clone;
 }
+
+char *strnclone(const char *s, size_t len)
+{
+	char *clone;
+
+	if (s == NULL) {
+		errno = EINVAL;
+		return NULL;
+	}
+
+	if ((clone = malloc(len + 1)) == NULL) {
+		return NULL;
+	}
+
+	memcpy(clone, s, len);
+	clone[len] = '\0';
+
+	return clone;
+}

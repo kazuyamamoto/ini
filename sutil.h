@@ -6,6 +6,8 @@
 #ifndef SUTIL_H
 #define SUTIL_H
 
+#include <stddef.h>
+
 /**
  * @brief 1行を取得する。
  * @param[in]  s    1行を取得したい文字列。
@@ -29,5 +31,15 @@ char *sgetline(const char* s, const char** next);
  * 失敗時には NULL が返り、　errno　が設定される。
  */
 char* strclone(const char* s);
+
+/**
+ * @brief 文字列のクローンを作る。文字数を指定する。
+ * @param[in] s 文字列
+ * @param[in] len s からクローンを作る文字数。
+ * @return クローンされた文字列。
+ * 不要になった場合 free() すること。
+ * 失敗時には NULL が返り、　errno　が設定される。
+ */
+char* strnclone(const char* s, size_t len);
 
 #endif	/* SUTIL_H */

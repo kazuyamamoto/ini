@@ -29,7 +29,7 @@ void section_delete(Section *section);
 
 /**
  * @brief セクション名を取得する。
- * @param[in] セクション名を取得するセクションオブジェクト。
+ * @param[in] section セクション名を取得するセクションオブジェクト。
  * @return セクション名
  */
 const char *section_name(const Section *section);
