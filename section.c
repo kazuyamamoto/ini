@@ -72,11 +72,9 @@ Section *section_parse(const char *s)
 	}
 
 	/* セクション名の取り出し */
-	if ((section_name = malloc(len + 1)) == NULL) {
+	if ((section_name = strnclone(s + 1, len)) == NULL) {
 		return NULL;
 	}
-	memcpy(section_name, s + 1, len);
-	section_name[len] = '\0';
 
 	/* セクションオブジェクトの生成 */
 	if ((section = section_new()) == NULL) {
