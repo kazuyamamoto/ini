@@ -13,19 +13,13 @@ struct Section;
 typedef struct Section Section;
 
 /**
- * @brief セクション名を解釈して取得する。
- * 例えば "[abc]" を解釈して "abc" を取得する。
- * @param[in] line 1行の文字列
- * @return 解釈して取り出したセクション名。失敗時には NULL が返る。
- */
-char *parse_section_name(const char *line);
-
-/**
- * @brief セクションオブジェクトを初期化する
- * @param[in] name セクション名
+ * @brief 文字列を解釈してセクションオブジェクト取得する。
+ * 例えば "[abc]" を解釈して "abc" というセクション名のセクションオブジェクトを取得する。
+ * @param[in] s 文字列
  * @return セクションオブジェクト。失敗時には NULL が返る。
+ * 不要になった場合は section_delete() で解放すること。
  */
-Section *section_new(const char *name);
+Section *section_parse(const char *s);
 
 /**
  * @brief セクションオブジェクトを解放する。

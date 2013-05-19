@@ -53,17 +53,11 @@ Ini *ini_parse(const char *data, size_t *errline)
 	}
 
 	/* 最初はセクションが来る */
-	if ((section_name = parse_section_name(line)) == NULL) {
-		free(line);
+	section = section_parse(line);
+	free(line);
+	if (section == NULL) {
 		goto ERROR;
 	}
-	free(line);
-
-	if ((section = section_new(section_name)) == NULL) {
-	   free(section_name);
-	   goto ERROR;
-	}
-	free(section_name);
 
 	data = next;
 	if ((line = sgetline(data, &next)) == NULL) {

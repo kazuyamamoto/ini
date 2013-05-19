@@ -27,23 +27,23 @@ static int teardown(void)
 	return 0;
 }
 
-void test_parse_section_name_null(void)
+void test_section_parse_null(void)
 {
-	PCU_ASSERT_PTR_NULL(parse_section_name(NULL));
+	PCU_ASSERT_PTR_NULL(section_parse(NULL));
 }
 
-void test_parse_section_name(void)
+void test_section_parse(void)
 {
-	char *name = parse_section_name("[sectionname]");
-	PCU_ASSERT_STRING_EQUAL("sectionname", name);
-	free(name);
+	Section *section = section_parse("[sectionname]");
+	PCU_ASSERT_PTR_NOT_NULL(section);
+	section_delete(section);
 }
 
 PCU_Suite *test_section_suite(void)
 {
 	static PCU_Test tests[] = {
-		PCU_TEST(test_parse_section_name_null),
-		PCU_TEST(test_parse_section_name),
+		PCU_TEST(test_section_parse_null),
+		PCU_TEST(test_section_parse),
 	};
 	static PCU_Suite suite = {
 		"test_section", tests, sizeof tests / sizeof tests[0], setup, teardown, initialize, cleanup
