@@ -23,16 +23,16 @@ Key *key_parse(const char *line);
  * @brief キーオブジェクトを解放する。
  * @param[in,out] 解放されるキーオブジェクト
  */
-void key_delete(Key* key);
+void key_delete(Key *key);
 
 /**
  * @brief 名前を取得する。
  */
-const char* key_name(Key* key);
+const char *key_name(const Key *key);
 
 /**
  * @brief 値を取得する。
  */
-const char* key_value(Key* key);
+const char *key_value(const Key *key);
 
-#endif /* KEY_H*/
+#endif /* KEY_H */

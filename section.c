@@ -5,6 +5,7 @@
 
 #include "key.h"
 #include "section.h"
+#include "sutil.h"
 #include <stddef.h>
 #include <ctype.h>
 #include <string.h>
@@ -13,7 +14,7 @@
 struct Section {
 	char *name;
 	size_t nkeys;
-	Key *keys;
+	Key **keys;
 };
 
 char *parse_sectionname(const char *line)
@@ -62,24 +63,43 @@ char *parse_sectionname(const char *line)
 	return sectionname;
 }
 
-/* セクションオブジェクトの初期化 */
-Section *section_new(char *name)
+Section *section_new(const char *name)
 {
-	Section *section = malloc(sizeof *section);
-	if (section == NULL) {
+	size_t len;
+	char *section_name;
+	Section *section;
+
+	if (name == NULL) {
 		return NULL;
 	}
 
-	section->name = name;
+	if ((len = strlen(name)) == 0) {
+		return NULL;
+	}
+
+	if ((section_name = strclone(name)) == NULL) {
+		return NULL;
+	}
+
+	if ((section = malloc(sizeof *section)) == NULL) {
+		return NULL;
+	}
+
+	section->name = section_name;
 	section->nkeys = 0;
 	section->keys = NULL;
+
 	return section;
 }
 
-/* セクションオブジェクトの解放 */
 void section_delete(Section *section)
 {
+	size_t i;
+
 	free(section->name);
+	for (i = 0; i < section->nkeys; i++) {
+		key_delete(section->keys[i]);
+	}
+	free(section->keys);
 	free(section);
-	/* TODO: free keys */
 }

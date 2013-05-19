@@ -8,7 +8,7 @@
 #include <string.h>
 #include <errno.h>
 
-char *sgetline(const char* s, const char** next)
+char *sgetline(const char *s, const char **next)
 {
 	size_t n;
 	char *line;
@@ -18,6 +18,7 @@ char *sgetline(const char* s, const char** next)
 		return NULL;
 	}
 
+	/* 1行の終わりまでの文字数を数える */
 	for (n = 0; *s != '\n' && *s != '\0'; n++, s++)
 		;
 
@@ -39,4 +40,23 @@ char *sgetline(const char* s, const char** next)
 	}
 
 	return line;
+}
+
+char *strclone(const char *s)
+{
+	size_t len;
+	char *clone;
+
+	if (s == NULL) {
+		errno = EINVAL;
+		return NULL;
+	}
+
+	len = strlen(s);
+	if ((clone = malloc(len + 1)) == NULL) {
+		return NULL;
+	}
+
+	strcpy(clone, s);
+	return clone;
 }

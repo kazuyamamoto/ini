@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-/* INI */
+/* INI オブジェクト */
 struct Ini {
 	size_t nsections;
 	Section **sections;

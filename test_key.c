@@ -29,7 +29,7 @@ static int teardown(void)
 
 void test_key_parse(void)
 {
-	Key* key = key_parse("Name=Value");
+	Key *key = key_parse("Name=Value");
 	PCU_ASSERT_PTR_NOT_NULL(key);
 	PCU_ASSERT_STRING_EQUAL("Name", key_name(key));
 	PCU_ASSERT_STRING_EQUAL("Value", key_value(key));
@@ -38,7 +38,7 @@ void test_key_parse(void)
 
 void test_key_parse_null(void)
 {
-	Key* key = key_parse(NULL);
+	Key *key = key_parse(NULL);
 	PCU_ASSERT_PTR_NULL(key);
 }
 

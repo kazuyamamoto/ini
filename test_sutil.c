@@ -142,6 +142,28 @@ static void test_sgetline_emptylines(void)
 	PCU_ASSERT_PTR_NULL(line);
 }
 
+static void test_strclone_null(void)
+{
+	char* clone = strclone(NULL);
+	PCU_ASSERT_PTR_NULL(clone);
+}
+
+static void test_strclone_empty(void)
+{
+	char* clone = strclone("");
+	PCU_ASSERT_PTR_NOT_NULL(clone);
+	PCU_ASSERT_STRING_EQUAL("", clone);
+	free(clone);
+}
+
+static void test_strclone(void)
+{
+	char* clone = strclone("abc");
+	PCU_ASSERT_PTR_NOT_NULL(clone);
+	PCU_ASSERT_STRING_EQUAL("abc", clone);
+	free(clone);
+}
+
 PCU_Suite *test_sutil_suite(void)
 {
 	static PCU_Test tests[] = {
@@ -151,6 +173,9 @@ PCU_Suite *test_sutil_suite(void)
 		PCU_TEST(test_sgetline_next_null),
 		PCU_TEST(test_sgetline_multilines),
 		PCU_TEST(test_sgetline_emptylines),
+		PCU_TEST(test_strclone_null),
+		PCU_TEST(test_strclone_empty),
+		PCU_TEST(test_strclone),
 	};
 	static PCU_Suite suite = {
 		"test_sutil", tests, sizeof tests / sizeof tests[0], setup, teardown, initialize, cleanup

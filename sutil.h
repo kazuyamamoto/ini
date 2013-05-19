@@ -21,4 +21,13 @@
  */
 char *sgetline(const char* s, const char** next);
 
+/**
+ * @brief 文字列のクローンを作る。
+ * @param[in] s 文字列
+ * @return クローンされた文字列。
+ * 不要になった場合 free() すること。
+ * 失敗時には NULL が返り、　errno　が設定される。
+ */
+char* strclone(const char* s);
+
 #endif	/* SUTIL_H */
