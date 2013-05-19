@@ -34,7 +34,7 @@ Ini *ini_parse(const char *data, size_t *errline)
 {
 	Ini *ini;
 	char *line;
-	char *sectionname;
+	char *section_name;
 	Section* section;
 	const char *next;
 
@@ -51,15 +51,17 @@ Ini *ini_parse(const char *data, size_t *errline)
 	}
 
 	/* 最初はセクションが来る */
-	if ((sectionname = parse_sectionname(line)) == NULL) {
+	if ((section_name = parse_section_name(line)) == NULL) {
 		free(line);
 		goto ERROR;
 	}
 	free(line);
 
-	if ((section = section_new(sectionname)) == NULL) {
+	if ((section = section_new(section_name)) == NULL) {
+	   free(section_name);
 	   goto ERROR;
 	}
+	free(section_name);
 	ini_add_section(ini, section);
 
 	return ini;
@@ -91,7 +93,7 @@ char *ini_get(const Ini *ini, const char *section, const char *name)
 }
 
 /* Ini オブエジェクトにセクションオブジェクトを追加する */
-static Ini* ini_add_section(Ini *ini, Section *section)
+static Ini *ini_add_section(Ini *ini, Section *section)
 {
 	if (ini->nsections) {
 		Section **tmp;

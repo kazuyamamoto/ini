@@ -18,7 +18,7 @@ typedef struct Section Section;
  * @param[in] line 1行の文字列
  * @return 解釈して取り出したセクション名。失敗時には NULL が返る。
  */
-char *parse_sectionname(const char *line);
+char *parse_section_name(const char *line);
 
 /**
  * @brief セクションオブジェクトを初期化する

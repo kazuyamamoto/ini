@@ -17,7 +17,7 @@ struct Section {
 	Key **keys;
 };
 
-char *parse_sectionname(const char *line)
+char *parse_section_name(const char *line)
 {
 	enum { BEFORE, OPEN, NAME, CLOSE, AFTER } state = BEFORE;
 	char *sectionname = NULL;
