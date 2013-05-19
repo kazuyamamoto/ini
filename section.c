@@ -20,7 +20,7 @@ struct Section {
 char *parse_section_name(const char *line)
 {
 	enum { BEFORE, OPEN, NAME, CLOSE, AFTER } state = BEFORE;
-	char *sectionname = NULL;
+	char *section_name = NULL;
 	size_t len = 0, i;
 
 	if (line == NULL) {
@@ -55,12 +55,12 @@ char *parse_section_name(const char *line)
 	}
 
 	/* セクション名の取り出し */
-	if ((sectionname = malloc(len + 1)) == NULL) {
+	if ((section_name = malloc(len + 1)) == NULL) {
 		return NULL;
 	}
-	memcpy(sectionname, line + 1, len);
-	sectionname[len] = '\0';
-	return sectionname;
+	memcpy(section_name, line + 1, len);
+	section_name[len] = '\0';
+	return section_name;
 }
 
 Section *section_new(const char *name)
