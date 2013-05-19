@@ -15,7 +15,7 @@ struct Key {
 	char *value;
 };
 
-Key *key_parse(const char *line)
+Key *key_parse(const char *s)
 {
 	enum { BEFORE, NAME, AFTER_NAME, EQUAL, AFTER_EQUAL, VALUE, AFTER } state = BEFORE;
 	size_t name_pos, name_len = 0;
@@ -23,13 +23,13 @@ Key *key_parse(const char *line)
 	size_t i;
 	Key *key;
 
-	if (line == NULL) {
+	if (s == NULL) {
 		return NULL;
 	}
 
 	/* 名前の始点と長さ、値の始点と長さを求める */
-	for (i = 0; i < strlen(line); i++) {
-		if (isalnum((int)line[i])) {
+	for (i = 0; i < strlen(s); i++) {
+		if (isalnum((int)s[i])) {
 			if (state == BEFORE) {
 				state = NAME;
 				name_pos = i;
@@ -45,7 +45,7 @@ Key *key_parse(const char *line)
 			} else {
 				return NULL;
 			}
-		} else if (isblank((int)line[i])) {
+		} else if (isblank((int)s[i])) {
 			if (state == NAME) {
 				state = AFTER_NAME;
 			} else if (state == EQUAL) {
@@ -55,14 +55,14 @@ Key *key_parse(const char *line)
 			} else {
 				return NULL;
 			}
-		} else if (line[i] == '=') {
+		} else if (s[i] == '=') {
 			if (state == NAME || state == AFTER_NAME) {
 				state = EQUAL;
 			} else {
 				return NULL;
 			}
 		}
-	}	
+	}
 
 	/* 中途半端に終わっていないことを確認 */
 	if (state != VALUE && state != AFTER)  {
@@ -78,7 +78,7 @@ Key *key_parse(const char *line)
 		key_delete(key);
 		return NULL;
 	}
-	memcpy(key->name, line + name_pos, name_len);
+	memcpy(key->name, s + name_pos, name_len);
 	key->name[name_len] = '\0';
 
 	/* 値の割り当て */
@@ -86,10 +86,10 @@ Key *key_parse(const char *line)
 		key_delete(key);
 		return NULL;
 	}
-	memcpy(key->value, line + value_pos, value_len);
+	memcpy(key->value, s + value_pos, value_len);
 	key->value[value_len] = '\0';
 
-	return key; 
+	return key;
 }
 
 void key_delete(Key *key)
@@ -111,10 +111,10 @@ void key_delete(Key *key)
 
 const char *key_name(const Key *key)
 {
-	return key->name; 
+	return key->name;
 }
 
 const char *key_value(const Key *key)
 {
-	return key->value; 
+	return key->value;
 }

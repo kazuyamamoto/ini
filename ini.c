@@ -6,6 +6,7 @@
 #include "ini.h"
 #include "sutil.h"
 #include "section.h"
+#include "key.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -37,6 +38,7 @@ Ini *ini_parse(const char *data, size_t *errline)
 	char *section_name;
 	Section* section;
 	const char *next;
+	Key *key;
 
 	if (data == NULL || errline == NULL) {
 		return NULL;
@@ -62,6 +64,18 @@ Ini *ini_parse(const char *data, size_t *errline)
 	   goto ERROR;
 	}
 	free(section_name);
+
+	data = next;
+	if ((line = sgetline(data, &next)) == NULL) {
+		section_delete(section);
+		goto ERROR;
+	}
+
+	if ((key = key_parse(line)) == NULL) {
+		section_delete(section);
+		goto ERROR;
+	}
+
 	ini_add_section(ini, section);
 
 	return ini;
