@@ -34,4 +34,12 @@ void section_delete(Section *section);
  */
 const char *section_name(const Section *section);
 
+/**
+ * @brief キーをセクションに追加する。
+ * @param[in,out] section キーを追加するセクション
+ * @param[in]     key     追加するキー
+ * @return 成功した場合は　0 、失敗した場合は 0 以外の値が返る。
+ */
+int section_add_key(Section *section, Key *key);
+
 #endif /* SECTION_H */

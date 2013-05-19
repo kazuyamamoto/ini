@@ -35,7 +35,7 @@ static Section *section_new(void)
 Section *section_parse(const char *s)
 {
 	enum { BEFORE, OPEN, NAME, CLOSE, AFTER } state = BEFORE;
-	char *section_name = NULL;
+	char *name = NULL;
 	size_t len = 0, i;
 	Section *section;
 
@@ -72,16 +72,16 @@ Section *section_parse(const char *s)
 	}
 
 	/* セクション名の取り出し */
-	if ((section_name = strnclone(s + 1, len)) == NULL) {
+	if ((name = strnclone(s + 1, len)) == NULL) {
 		return NULL;
 	}
 
 	/* セクションオブジェクトの生成 */
 	if ((section = section_new()) == NULL) {
-		free(section_name);
+		free(name);
 		return NULL;
 	}
-	section->name = section_name;
+	section->name = name;
 
 	return section;
 }
@@ -101,4 +101,18 @@ void section_delete(Section *section)
 const char *section_name(const Section *section)
 {
 	return section->name;
+}
+
+int section_add_key(Section *section, Key *key)
+{
+	Key **tmp;
+
+	if ((tmp = realloc(section->keys, (sizeof *tmp) * (section->nkeys + 1))) == NULL) {
+		return -1;
+	}
+	section->keys = tmp;
+	section->keys[section->nkeys] = key;
+	section->nkeys++;
+
+	return 0;
 }
