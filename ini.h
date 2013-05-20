@@ -34,6 +34,7 @@ Ini* ini_parse(const char* data, size_t* errline);
 
 /**
  * @brief Ini オブジェクトに割り当てられたメモリを解放する。
+ * @param[in,out] ini 解放する Ini オブジェクト
  */
 void ini_delete(Ini* ini);
 
@@ -41,7 +42,7 @@ void ini_delete(Ini* ini);
  * @brief 指定したセクションとキーから値を取得する。
  * @param[in] ini 値を取得したい Ini オブジェクト。
  * @param[in] section 値を取得したいセクション。
- * @param[in] name 値を取得したい名前。
+ * @param[in] name 値を取得したいキーの名前。
  * @return セクションと名前で指定された値。
  * 不要になった場合は free() すること。
  * 存在しない場合は NULL 。
