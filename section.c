@@ -115,6 +115,7 @@ int section_add_key(Section *section, Key *key)
 	if (tmp == NULL) {
 		return -1;
 	}
+
 	section->keys = tmp;
 	section->keys[section->nkeys] = key;
 	section->nkeys++;

@@ -6,6 +6,8 @@
 #ifndef SECTION_H
 #define SECTION_H
 
+#include "key.h"
+
 /**
  * @brief INIファイルのセクション部分のオブジェクト
  */

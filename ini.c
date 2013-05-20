@@ -17,7 +17,21 @@ struct Ini {
 	Section **sections;
 };
 
-static Ini *ini_add_section(Ini *ini, Section *section);
+/* Ini オブエジェクトにセクションオブジェクトを追加する */
+static int ini_add_section(Ini *ini, Section *section)
+{
+	Section **tmp = realloc(ini->sections, sizeof(Section*) * (ini->nsections + 1));
+
+	if (tmp == NULL) {
+		return -1;
+	}
+
+	ini->sections = tmp;
+	ini->sections[ini->nsections] = section;
+	ini->nsections++;
+
+	return 0;
+}
 
 Ini *ini_new(void)
 {
@@ -35,7 +49,6 @@ Ini *ini_parse(const char *data, size_t *errline)
 {
 	Ini *ini;
 	char *line;
-	char *section_name;
 	Section* section;
 	const char *next;
 	Key *key;
@@ -48,33 +61,42 @@ Ini *ini_parse(const char *data, size_t *errline)
 		return NULL;
 	}
 
+	/* セクションの解釈 */
 	if ((line = sgetline(data, &next)) == NULL) {
 		return ini;
 	}
 
-	/* 最初はセクションが来る */
 	section = section_parse(line);
 	free(line);
 	if (section == NULL) {
-		goto ERROR;
+		goto ERROR_PROCESS;
 	}
 
+	/* キーの解釈 */
 	data = next;
 	if ((line = sgetline(data, &next)) == NULL) {
 		section_delete(section);
-		goto ERROR;
+		goto ERROR_PROCESS;
 	}
 
-	if ((key = key_parse(line)) == NULL) {
+	key = key_parse(line);
+	free(line);
+	if (key == NULL) {
 		section_delete(section);
-		goto ERROR;
+		goto ERROR_PROCESS;
 	}
 
-	ini_add_section(ini, section);
+	if (section_add_key(section, key)) {
+		// error
+	}
+
+	if (ini_add_section(ini, section)) {
+		// error
+	}
 
 	return ini;
 
-ERROR:
+ERROR_PROCESS:
 	ini_delete(ini);
 	return NULL;
 }
@@ -98,27 +120,4 @@ char *ini_get(const Ini *ini, const char *section, const char *name)
 	/* TODO: implement */
 
 	return NULL;
-}
-
-/* Ini オブエジェクトにセクションオブジェクトを追加する */
-static Ini *ini_add_section(Ini *ini, Section *section)
-{
-	if (ini->nsections) {
-		Section **tmp;
-		if ((tmp = realloc(ini->sections, sizeof(Section*) * (ini->nsections + 1))) == NULL) {
-			return NULL;
-		} else {
-			ini->sections[ini->nsections] = section;
-			ini->nsections++;
-			return ini;
-		}
-	} else {
-		if ((ini->sections = malloc(sizeof section)) == NULL) {
-			return NULL;
-		} else {
-			ini->nsections = 1;
-			ini->sections[0] = section;
-			return ini;
-		}
-	}
 }
