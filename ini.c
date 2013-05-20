@@ -9,6 +9,7 @@
 #include "key.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <errno.h>
 
 /* INI オブジェクト */
@@ -31,6 +32,19 @@ static int ini_add_section(Ini *ini, Section *section)
 	ini->nsections++;
 
 	return 0;
+}
+
+static Section *ini_search_section(const Ini *ini, const char* section_name)
+{
+	size_t i;
+
+	for (i = 0; i < ini->nsections; i++) {
+		if (strcmp(section_get_name(ini->sections[i]), section_name) == 0) {
+			return ini->sections[i];
+		}
+	}
+
+	return NULL;
 }
 
 Ini *ini_new(void)
@@ -103,21 +117,32 @@ ERROR_PROCESS:
 
 void ini_delete(Ini *ini)
 {
-	int i;
+	size_t i;
+
+	if (ini == NULL) {
+		return;
+	}
+
 	for (i = 0; i < ini->nsections; i++) {
 		section_delete(ini->sections[i]);
 	}
 	free(ini);
 }
 
-char *ini_get(const Ini *ini, const char *section, const char *name)
+char *ini_get(const Ini *ini, const char *section_name, const char *key_name)
 {
-	if (ini == NULL || section == NULL || name == NULL) {
+	Section *section;
+
+	if (ini == NULL || section_name == NULL || key_name == NULL) {
 		errno = EINVAL;
 		return NULL;
 	}
 
-	/* TODO: implement */
+	if ((section = ini_search_section(ini, section_name)) == NULL) {
+		return NULL;
+	}
+
+	// TODO: impl
 
 	return NULL;
 }

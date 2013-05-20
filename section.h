@@ -35,7 +35,7 @@ void section_delete(Section *section);
  * @param[in] section セクション名を取得するセクションオブジェクト。
  * @return セクション名
  */
-const char *section_name(const Section *section);
+const char *section_get_name(const Section *section);
 
 /**
  * @brief キーをセクションに追加する。

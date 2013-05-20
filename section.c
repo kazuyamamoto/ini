@@ -98,7 +98,7 @@ void section_delete(Section *section)
 	free(section);
 }
 
-const char *section_name(const Section *section)
+const char *section_get_name(const Section *section)
 {
 	return section->name;
 }
