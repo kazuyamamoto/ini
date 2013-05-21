@@ -45,4 +45,12 @@ const char *section_get_name(const Section *section);
  */
 int section_add_key(Section *section, Key *key);
 
+/**
+ * @brief キーの名前に一致するキーを取得する。
+ * @param[in] section キーを取得するセクション
+ * @param[in] name キーの名前
+ * @return キー。存在しない場合は NULL
+ */
+Key *section_search_key(Section *section, const char* name);
+
 #endif /* SECTION_H */

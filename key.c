@@ -109,12 +109,12 @@ void key_delete(Key *key)
 	free(key);
 }
 
-const char *key_name(const Key *key)
+const char *key_get_name(const Key *key)
 {
 	return key->name;
 }
 
-const char *key_value(const Key *key)
+const char *key_get_value(const Key *key)
 {
 	return key->value;
 }

@@ -122,3 +122,21 @@ int section_add_key(Section *section, Key *key)
 
 	return 0;
 }
+
+Key *section_search_key(Section* section, const char *name)
+{
+	size_t i;
+
+	if (section == NULL || name == NULL) {
+		return NULL;
+	}
+
+	for (i = 0; i < section->nkeys; i++) {
+		const char *key_name = key_get_name(section->keys[i]);
+		if (strcmp(key_name, name) == 0) {
+			return section->keys[i];
+		}
+	}
+
+	return NULL;
+}

@@ -30,13 +30,13 @@ void key_delete(Key *key);
  * @param[in] key 名前を取得するキーオブジェクト
  * @return キーの名前部分。不要になっても free() しないこと。
  */
-const char *key_name(const Key *key);
+const char *key_get_name(const Key *key);
 
 /**
  * @brief 値を取得する。
  * @param[in] key 値を取得するキーオブジェクト
  * @return キーの値部分。不要になっても free() しないこと。
  */
-const char *key_value(const Key *key);
+const char *key_get_value(const Key *key);
 
 #endif /* KEY_H */
