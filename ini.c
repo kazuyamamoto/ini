@@ -129,9 +129,10 @@ void ini_delete(Ini *ini)
 	free(ini);
 }
 
-char *ini_get(const Ini *ini, const char *section_name, const char *key_name)
+const char *ini_get(const Ini *ini, const char *section_name, const char *key_name)
 {
 	Section *section;
+	Key *key;
 
 	if (ini == NULL || section_name == NULL || key_name == NULL) {
 		errno = EINVAL;
@@ -142,7 +143,9 @@ char *ini_get(const Ini *ini, const char *section_name, const char *key_name)
 		return NULL;
 	}
 
-	// TODO: impl
+	if ((key = section_search_key(section, key_name)) == NULL) {
+		return NULL;
+	}
 
-	return NULL;
+	return key_get_value(key);
 }

@@ -47,6 +47,6 @@ void ini_delete(Ini* ini);
  * 不要になった場合は free() すること。
  * 存在しない場合は NULL 。
  */
-char* ini_get(const Ini* ini, const char* section, const char* name);
+const char* ini_get(const Ini* ini, const char* section, const char* name);
 
 #endif	/* INI_H */
