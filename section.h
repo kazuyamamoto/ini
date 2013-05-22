@@ -33,7 +33,7 @@ void section_delete(Section *section);
 /**
  * @brief セクション名を取得する。
  * @param[in] section セクション名を取得するセクションオブジェクト。
- * @return セクション名
+ * @return セクション名。不要になっても free() しないこと。
  */
 const char *section_get_name(const Section *section);
 
@@ -49,7 +49,8 @@ int section_add_key(Section *section, Key *key);
  * @brief キーの名前に一致するキーを取得する。
  * @param[in] section キーを取得するセクション
  * @param[in] name キーの名前
- * @return キー。存在しない場合は NULL
+ * @return キーオブジェクト。不要になっても free() や key_delete() しないこと。
+ * 存在しない場合は NULL
  */
 Key *section_search_key(Section *section, const char* name);
 

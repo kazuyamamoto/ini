@@ -22,7 +22,6 @@ struct Ini {
 static int ini_add_section(Ini *ini, Section *section)
 {
 	Section **tmp = realloc(ini->sections, sizeof(Section*) * (ini->nsections + 1));
-
 	if (tmp == NULL) {
 		return -1;
 	}
