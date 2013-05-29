@@ -18,7 +18,7 @@ struct Ini {
 	Section **sections;
 };
 
-/* Ini オブエジェクトにセクションオブジェクトを追加する */
+/* Ini オブジェクトにセクションオブジェクトを追加する */
 static int ini_add_section(Ini *ini, Section *section)
 {
 	Section **tmp = realloc(ini->sections, sizeof(Section*) * (ini->nsections + 1));
@@ -75,43 +75,35 @@ Ini *ini_parse(const char *data, size_t *errline)
 	}
 
 	/* セクションの解釈 */
-	if ((line = sgetline(data, &next)) == NULL) {
-		return ini;
-	}
-
+	line = sgetline(data, &next);
 	section = section_parse(line);
 	free(line);
 	if (section == NULL) {
-		goto ERROR_PROCESS;
+		return ini;
 	}
 
 	/* キーの解釈 */
 	data = next;
-	if ((line = sgetline(data, &next)) == NULL) {
-		section_delete(section);
-		goto ERROR_PROCESS;
-	}
-
+	line = sgetline(data, &next);
 	key = key_parse(line);
 	free(line);
 	if (key == NULL) {
 		section_delete(section);
-		goto ERROR_PROCESS;
+		return ini;
 	}
 
 	if (section_add_key(section, key)) {
-		// error
+		key_delete(key);
+		section_delete(section);
+		return ini;
 	}
 
 	if (ini_add_section(ini, section)) {
-		// error
+		section_delete(section);
+		return ini;
 	}
 
 	return ini;
-
-ERROR_PROCESS:
-	ini_delete(ini);
-	return NULL;
 }
 
 void ini_delete(Ini *ini)
