@@ -71,6 +71,10 @@ Section *section_parse(const char *s)
 		}
 	}
 
+	if (state != AFTER) {
+		return NULL;
+	}
+
 	/* セクション名の取り出し */
 	if ((name = strnclone(s + 1, len)) == NULL) {
 		return NULL;

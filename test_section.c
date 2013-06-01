@@ -22,6 +22,24 @@ void test_section_parse(void)
 	section_delete(section);
 }
 
+void test_section_parse_invalid_char(void)
+{
+	Section *section = section_parse("[section*name]");
+	PCU_ASSERT_PTR_NULL(section);
+}
+
+void test_section_parse_not_closed(void)
+{
+	Section *section = section_parse("[sectionname");
+	PCU_ASSERT_PTR_NULL(section);
+}
+
+void test_section_parse_not_opened(void)
+{
+	Section *section = section_parse("sectionname]");
+	PCU_ASSERT_PTR_NULL(section);
+}
+
 void test_section_search_key(void)
 {
 	Section *section = section_parse("[hoge]");
@@ -43,6 +61,9 @@ PCU_Suite *test_section_suite(void)
 		PCU_TEST(test_section_parse_null),
 		PCU_TEST(test_section_parse),
 		PCU_TEST(test_section_search_key),
+		PCU_TEST(test_section_parse_invalid_char),
+		PCU_TEST(test_section_parse_not_closed),
+		PCU_TEST(test_section_parse_not_opened),
 	};
 	static PCU_Suite suite = {
 		"test_section", tests, sizeof tests / sizeof tests[0]
