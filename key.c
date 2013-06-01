@@ -15,6 +15,12 @@ struct Key {
 	char *value;
 };
 
+/* isblank()がC99なのでその代用 */
+static int isspaceortab(int c)
+{
+	return c == ' ' || c == '\t';
+}
+
 Key *key_parse(const char *s)
 {
 	enum { BEFORE, NAME, AFTER_NAME, EQUAL, AFTER_EQUAL, VALUE, AFTER } state = BEFORE;
@@ -45,13 +51,15 @@ Key *key_parse(const char *s)
 			} else {
 				return NULL;
 			}
-		} else if (isblank((int)s[i])) {
+		} else if (isspaceortab((int)s[i])) {
 			if (state == NAME) {
 				state = AFTER_NAME;
 			} else if (state == EQUAL) {
 				state = AFTER_EQUAL;
 			} else if (state == VALUE) {
 				state = AFTER;
+			} else if (state == AFTER_NAME || state == AFTER_EQUAL || state == AFTER) {
+				/* do nothing */
 			} else {
 				return NULL;
 			}

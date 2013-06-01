@@ -62,12 +62,26 @@ static void test_ini_get_two_sections(void)
 	ini_delete(ini);
 }
 
+static void test_ini_get_ignore_empty_line(void)
+{
+	Ini *ini;
+	const char *value1, *value2;
+	size_t errline;
+
+	ini = ini_parse("[section1]\nname1=value1\n[section2]\nname2=value2", &errline);
+
+	ini_delete(ini);
+
+	PCU_FAIL("TODO: implement");
+}
+
 PCU_Suite *test_ini_suite(void)
 {
 	static PCU_Test tests[] = {
 		PCU_TEST(test_ini_get),
 		PCU_TEST(test_ini_get_two_keys),
 		PCU_TEST(test_ini_get_two_sections),
+		PCU_TEST(test_ini_get_ignore_empty_line),
 	};
 	static PCU_Suite suite = {
 		"test_ini", tests, sizeof tests / sizeof tests[0]
