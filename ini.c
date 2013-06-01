@@ -89,14 +89,24 @@ Ini *ini_parse(const char *data, size_t *errline)
 
 	while ((line = sgetline(data, &next)) != NULL) {
 		data = next;
+
 		key = key_parse(line);
-		free(line);
-		if (key == NULL) {
-			return ini;
+		if (key) {
+			free(line);
+			if (section_add_key(section, key)) {
+				key_delete(key);
+				return ini;
+			}
+			continue;
 		}
-		if (section_add_key(section, key)) {
-			key_delete(key);
-			return ini;
+
+		section = section_parse(line);
+		if (section) {
+			free(line);
+			if (ini_add_section(ini, section)) {
+				section_delete(section);
+				return ini;
+			}
 		}
 	}
 

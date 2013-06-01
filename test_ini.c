@@ -49,7 +49,7 @@ static void test_ini_get_two_sections(void)
 	const char *value1, *value2;
 	size_t errline;
 
-	ini = ini_parse("[section1]\nname1=value1\n[section2]name2=value2", &errline);
+	ini = ini_parse("[section1]\nname1=value1\n[section2]\nname2=value2", &errline);
 
 	value1 = ini_get(ini, "section1", "name1");
 	PCU_ASSERT_PTR_NOT_NULL(value1);
@@ -62,17 +62,11 @@ static void test_ini_get_two_sections(void)
 	ini_delete(ini);
 }
 
-static void test_ini_get_ignore_empty_line(void)
-{
-	PCU_FAIL("TODO: implement");
-}
-
 PCU_Suite *test_ini_suite(void)
 {
 	static PCU_Test tests[] = {
 		PCU_TEST(test_ini_get),
 		PCU_TEST(test_ini_get_two_keys),
-		PCU_TEST(test_ini_get_ignore_empty_line),
 		PCU_TEST(test_ini_get_two_sections),
 	};
 	static PCU_Suite suite = {
