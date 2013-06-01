@@ -74,33 +74,30 @@ Ini *ini_parse(const char *data, size_t *errline)
 		return NULL;
 	}
 
-	/* セクションの解釈 */
+	/* 最初のセクションの解釈 */
 	line = sgetline(data, &next);
+	data = next;
 	section = section_parse(line);
 	free(line);
 	if (section == NULL) {
 		return ini;
 	}
-
-	/* キーの解釈 */
-	data = next;
-	line = sgetline(data, &next);
-	key = key_parse(line);
-	free(line);
-	if (key == NULL) {
-		section_delete(section);
-		return ini;
-	}
-
-	if (section_add_key(section, key)) {
-		key_delete(key);
-		section_delete(section);
-		return ini;
-	}
-
 	if (ini_add_section(ini, section)) {
 		section_delete(section);
 		return ini;
+	}
+
+	while ((line = sgetline(data, &next)) != NULL) {
+		data = next;
+		key = key_parse(line);
+		free(line);
+		if (key == NULL) {
+			return ini;
+		}
+		if (section_add_key(section, key)) {
+			key_delete(key);
+			return ini;
+		}
 	}
 
 	return ini;
