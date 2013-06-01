@@ -28,6 +28,18 @@ void test_key_parse_no_equal(void)
 	PCU_ASSERT_PTR_NULL(key);
 }
 
+void test_key_parse_no_name(void)
+{
+	Key *key = key_parse("=value");
+	PCU_ASSERT_PTR_NULL(key);
+}
+
+void test_key_parse_no_value(void)
+{
+	Key *key = key_parse("name=");
+	PCU_ASSERT_PTR_NULL(key);
+}
+
 void test_key_parse_space(void)
 {
 	Key *key = key_parse("name \t = \t value \t ");
@@ -44,6 +56,8 @@ PCU_Suite *test_key_suite(void)
 		PCU_TEST(test_key_parse),
 		PCU_TEST(test_key_parse_no_equal),
 		PCU_TEST(test_key_parse_space),
+		PCU_TEST(test_key_parse_no_name),
+		PCU_TEST(test_key_parse_no_value),
 	};
 	static PCU_Suite suite = {
 		"test_key", tests, sizeof tests / sizeof tests[0]
