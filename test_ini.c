@@ -65,14 +65,15 @@ static void test_ini_get_two_sections(void)
 static void test_ini_get_ignore_empty_line(void)
 {
 	Ini *ini;
-	const char *value1, *value2;
+	const char *value;
 	size_t errline;
 
-	ini = ini_parse("[section1]\nname1=value1\n[section2]\nname2=value2", &errline);
+	ini = ini_parse("\n[section]\n\nname=value\n\n", &errline);
+	value = ini_get(ini, "section", "name");
+	PCU_ASSERT_PTR_NOT_NULL(value);
+	PCU_ASSERT_STRING_EQUAL("value", value);
 
 	ini_delete(ini);
-
-	PCU_FAIL("TODO: implement");
 }
 
 PCU_Suite *test_ini_suite(void)
