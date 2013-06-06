@@ -58,7 +58,7 @@ Key *key_parse(const char *s)
 				state = AFTER_EQUAL;
 			} else if (state == VALUE) {
 				state = AFTER;
-			} else if (state == AFTER_NAME || state == AFTER_EQUAL || state == AFTER) {
+			} else if (state == BEFORE || state == AFTER_NAME || state == AFTER_EQUAL || state == AFTER) {
 				/* do nothing */
 			} else {
 				return NULL;

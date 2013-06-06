@@ -42,7 +42,7 @@ void test_key_parse_no_value(void)
 
 void test_key_parse_space(void)
 {
-	Key *key = key_parse("name \t = \t value \t ");
+	Key *key = key_parse(" \tname \t = \t value \t ");
 	PCU_ASSERT_PTR_NOT_NULL(key);
 	PCU_ASSERT_STRING_EQUAL("name", key_get_name(key));
 	PCU_ASSERT_STRING_EQUAL("value", key_get_value(key));

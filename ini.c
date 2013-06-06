@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <assert.h>
 
 /* INI オブジェクト */
 struct Ini {
@@ -21,8 +22,12 @@ struct Ini {
 /* Ini オブジェクトにセクションオブジェクトを追加する */
 static int ini_add_section(Ini *ini, Section *section)
 {
-	Section **tmp = realloc(ini->sections, sizeof(Section*) * (ini->nsections + 1));
-	if (tmp == NULL) {
+	Section **tmp;
+
+	assert(ini != NULL);
+	assert(section != NULL);
+
+	if ((tmp = realloc(ini->sections, sizeof(Section*) * (ini->nsections + 1))) == NULL) {
 		return -1;
 	}
 
@@ -37,6 +42,9 @@ static Section *ini_search_section(const Ini *ini, const char* section_name)
 {
 	size_t i;
 
+	assert(ini != NULL);
+	assert(section_name != NULL);
+
 	for (i = 0; i < ini->nsections; i++) {
 		if (strcmp(section_get_name(ini->sections[i]), section_name) == 0) {
 			return ini->sections[i];
@@ -44,6 +52,13 @@ static Section *ini_search_section(const Ini *ini, const char* section_name)
 	}
 
 	return NULL;
+}
+
+static int is_blank_line(const char* line)
+{
+	assert(line != NULL);
+
+	return 0;
 }
 
 Ini *ini_new(void)
