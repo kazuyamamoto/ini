@@ -4,6 +4,7 @@
  */
 
 #include "key.h"
+#include "cutil.h"
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
@@ -14,12 +15,6 @@ struct Key {
 	char *name;
 	char *value;
 };
-
-/* isblank()がC99なのでその代用 */
-static int isspaceortab(int c)
-{
-	return c == ' ' || c == '\t';
-}
 
 Key *key_parse(const char *s)
 {
@@ -51,7 +46,7 @@ Key *key_parse(const char *s)
 			} else {
 				return NULL;
 			}
-		} else if (isspaceortab((int)s[i])) {
+		} else if (isspacetab((int)s[i])) {
 			if (state == NAME) {
 				state = AFTER_NAME;
 			} else if (state == EQUAL) {
