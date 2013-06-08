@@ -132,7 +132,10 @@ Ini *ini_parse(const char *data)
 				section_delete(section);
 				return ini;
 			}
+			continue;
 		}
+
+		free(line);
 	}
 
 	return ini;
