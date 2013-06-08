@@ -82,6 +82,15 @@ Ini *ini_new(void)
 	return ini;
 }
 
+/* 最初のセクションの解釈 */
+static Section *ini_parse_first_section(const char **data)
+{
+	char *line = sgetline(data);
+	Section *section = section_parse(line);
+	free(line);
+	return section;
+}
+
 Ini *ini_parse(const char *d)
 {
 	Ini *ini;
@@ -96,10 +105,7 @@ Ini *ini_parse(const char *d)
 	if ((ini = ini_new()) == NULL)
 		return NULL;
 
-	/* 最初のセクションの解釈 */
-	line = sgetline(&data);
-	section = section_parse(line);
-	free(line);
+	section = ini_parse_first_section(&data);
 	if (section == NULL)
 		return ini;
 
