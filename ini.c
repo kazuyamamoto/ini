@@ -73,7 +73,7 @@ Ini *ini_new(void)
 	return ini;
 }
 
-Ini *ini_parse(const char *data, size_t *errline)
+Ini *ini_parse(const char *data)
 {
 	Ini *ini;
 	char *line;
@@ -81,7 +81,7 @@ Ini *ini_parse(const char *data, size_t *errline)
 	const char *next;
 	Key *key;
 
-	if (data == NULL || errline == NULL) {
+	if (data == NULL) {
 		return NULL;
 	}
 

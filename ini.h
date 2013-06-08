@@ -25,12 +25,11 @@ Ini *ini_new(void);
 /**
  * @brief INI データを解釈して、 Ini オブジェクトを作成する。
  * @param[in] data 解釈する対象となる INI データ。終端は '\0' であること。
- * @param[out] errline 解釈に失敗した行番号が格納される。成功時は変更しない。
  * @return INI ファイルの内容を持つ Ini オブジェクト。
  * 不要になった場合は ini_delete() でメモリを解放すること。
- * 失敗時は、解釈に成功した部分までの Ini オブジェクトを返し、 errline を設定する。
+ * 失敗時は、解釈に成功した部分までの Ini オブジェクトを返する。
  */
-Ini *ini_parse(const char *data, size_t *errline);
+Ini *ini_parse(const char *data);
 
 /**
  * @brief Ini オブジェクトに割り当てられたメモリを解放する。

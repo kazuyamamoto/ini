@@ -11,9 +11,8 @@ static void test_ini_get(void)
 {
 	Ini *ini;
 	const char *value;
-	size_t errline;
 
-	ini = ini_parse("[section]\nname=value", &errline);
+	ini = ini_parse("[section]\nname=value");
 	PCU_ASSERT_PTR_NOT_NULL(ini);
 
 	value = ini_get(ini, "section", "name");
@@ -27,9 +26,8 @@ static void test_ini_get_two_keys(void)
 {
 	Ini *ini;
 	const char *value1, *value2;
-	size_t errline;
 
-	ini = ini_parse("[section]\nname1=value1\nname2=value2", &errline);
+	ini = ini_parse("[section]\nname1=value1\nname2=value2");
 	PCU_ASSERT_PTR_NOT_NULL(ini);
 
 	value1 = ini_get(ini, "section", "name1");
@@ -47,9 +45,8 @@ static void test_ini_get_two_sections(void)
 {
 	Ini *ini;
 	const char *value1, *value2;
-	size_t errline;
 
-	ini = ini_parse("[section1]\nname1=value1\n[section2]\nname2=value2", &errline);
+	ini = ini_parse("[section1]\nname1=value1\n[section2]\nname2=value2");
 
 	value1 = ini_get(ini, "section1", "name1");
 	PCU_ASSERT_PTR_NOT_NULL(value1);
@@ -66,9 +63,8 @@ static void test_ini_get_ignore_empty_line(void)
 {
 	Ini *ini;
 	const char *value;
-	size_t errline;
 
-	ini = ini_parse("\n[section]\n\nname=value\n\n", &errline);
+	ini = ini_parse("\n[section]\n\nname=value\n\n");
 	value = ini_get(ini, "section", "name");
 	PCU_ASSERT_PTR_NOT_NULL(value);
 	PCU_ASSERT_STRING_EQUAL("value", value);
