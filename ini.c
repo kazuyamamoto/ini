@@ -105,8 +105,7 @@ Ini *ini_parse(const char *d)
 	if ((ini = ini_new()) == NULL)
 		return NULL;
 
-	section = ini_parse_first_section(&data);
-	if (section == NULL)
+	if ((section = ini_parse_first_section(&data)) == NULL)
 		return ini;
 
 	if (ini_add_section(ini, section)) {
@@ -116,8 +115,7 @@ Ini *ini_parse(const char *d)
 
 	while ((line = sgetline(&data)) != NULL) {
 
-		key = key_parse(line);
-		if (key) {
+		if ((key = key_parse(line)) != NULL) {
 			free(line);
 			if (section_add_key(section, key)) {
 				key_delete(key);
@@ -126,8 +124,7 @@ Ini *ini_parse(const char *d)
 			continue;
 		}
 
-		section = section_parse(line);
-		if (section) {
+		if ((section = section_parse(line)) != NULL) {
 			free(line);
 			if (ini_add_section(ini, section)) {
 				section_delete(section);
