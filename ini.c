@@ -82,38 +82,33 @@ Ini *ini_new(void)
 	return ini;
 }
 
-Ini *ini_parse(const char *data)
+Ini *ini_parse(const char *d)
 {
 	Ini *ini;
 	char *line;
 	Section *section;
-	const char *next;
 	Key *key;
+	const char* data = d;
 
-	if (data == NULL) {
+	if (data == NULL)
 		return NULL;
-	}
 
-	if ((ini = ini_new()) == NULL) {
+	if ((ini = ini_new()) == NULL)
 		return NULL;
-	}
 
 	/* 最初のセクションの解釈 */
-	line = sgetline(data, &next);
-	data = next;
+	line = sgetline(&data);
 	section = section_parse(line);
 	free(line);
-	if (section == NULL) {
+	if (section == NULL)
 		return ini;
-	}
 
 	if (ini_add_section(ini, section)) {
 		section_delete(section);
 		return ini;
 	}
 
-	while ((line = sgetline(data, &next)) != NULL) {
-		data = next;
+	while ((line = sgetline(&data)) != NULL) {
 
 		key = key_parse(line);
 		if (key) {
