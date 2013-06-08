@@ -5,6 +5,7 @@
 
 #include "ini.h"
 #include "sutil.h"
+#include "cutil.h"
 #include "section.h"
 #include "key.h"
 #include <stdlib.h>
@@ -54,11 +55,19 @@ static Section *ini_search_section(const Ini *ini, const char* section_name)
 	return NULL;
 }
 
-static int is_blank_line(const char* line)
+/* 空行かどうか */
+static int isblankstr(const char* s)
 {
-	assert(line != NULL);
+	assert(s != NULL);
 
-	return 0;
+	while (*s != '\0') {
+		if (!isspacetab(*s)) {
+			return 0;
+		}
+		s++;
+	}
+
+	return 1;
 }
 
 Ini *ini_new(void)
@@ -77,7 +86,7 @@ Ini *ini_parse(const char *data)
 {
 	Ini *ini;
 	char *line;
-	Section* section;
+	Section *section;
 	const char *next;
 	Key *key;
 
@@ -97,6 +106,7 @@ Ini *ini_parse(const char *data)
 	if (section == NULL) {
 		return ini;
 	}
+
 	if (ini_add_section(ini, section)) {
 		section_delete(section);
 		return ini;
