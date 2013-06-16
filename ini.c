@@ -21,7 +21,7 @@ struct Ini {
 };
 
 /* Ini オブジェクトにセクションオブジェクトを追加する */
-static int ini_add_section(Ini *ini, Section *section)
+static int add_section(Ini *ini, Section *section)
 {
 	Section **tmp;
 
@@ -39,7 +39,7 @@ static int ini_add_section(Ini *ini, Section *section)
 	return 0;
 }
 
-static Section *ini_search_section(const Ini *ini, const char* section_name)
+static Section *search_section(const Ini *ini, const char* section_name)
 {
 	size_t i;
 
@@ -83,7 +83,7 @@ Ini *ini_new(void)
 }
 
 /* 最初のセクションの解釈 */
-static Section *ini_parse_first_section(Ini *ini, const char **data)
+static Section *parse_first_section(Ini *ini, const char **data)
 {
 	char *line = sgetline(data);
 	Section *section = section_parse(line);
@@ -93,7 +93,7 @@ static Section *ini_parse_first_section(Ini *ini, const char **data)
 		return NULL;
 	}
 
-	if (ini_add_section(ini, section)) {
+	if (add_section(ini, section)) {
 		section_delete(section);
 		return NULL;
 	}
@@ -115,7 +115,7 @@ Ini *ini_parse(const char *d)
 	if ((ini = ini_new()) == NULL)
 		return NULL;
 
-	if ((section = ini_parse_first_section(ini, &data)) == NULL)
+	if ((section = parse_first_section(ini, &data)) == NULL)
 		return ini;
 
 	while ((line = sgetline(&data)) != NULL) {
@@ -131,7 +131,7 @@ Ini *ini_parse(const char *d)
 
 		if ((section = section_parse(line)) != NULL) {
 			free(line);
-			if (ini_add_section(ini, section)) {
+			if (add_section(ini, section)) {
 				section_delete(section);
 				return ini;
 			}
@@ -168,7 +168,7 @@ const char *ini_get(const Ini *ini, const char *section_name, const char *key_na
 		return NULL;
 	}
 
-	if ((section = ini_search_section(ini, section_name)) == NULL) {
+	if ((section = search_section(ini, section_name)) == NULL) {
 		return NULL;
 	}
 
