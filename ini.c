@@ -83,11 +83,21 @@ Ini *ini_new(void)
 }
 
 /* 最初のセクションの解釈 */
-static Section *ini_parse_first_section(const char **data)
+static Section *ini_parse_first_section(Ini *ini, const char **data)
 {
 	char *line = sgetline(data);
 	Section *section = section_parse(line);
 	free(line);
+
+	if (section == NULL) {
+		return NULL;
+	}
+
+	if (ini_add_section(ini, section)) {
+		section_delete(section);
+		return NULL;
+	}
+
 	return section;
 }
 
@@ -97,7 +107,7 @@ Ini *ini_parse(const char *d)
 	char *line;
 	Section *section;
 	Key *key;
-	const char* data = d;
+	const char *data = d;
 
 	if (data == NULL)
 		return NULL;
@@ -105,13 +115,8 @@ Ini *ini_parse(const char *d)
 	if ((ini = ini_new()) == NULL)
 		return NULL;
 
-	if ((section = ini_parse_first_section(&data)) == NULL)
+	if ((section = ini_parse_first_section(ini, &data)) == NULL)
 		return ini;
-
-	if (ini_add_section(ini, section)) {
-		section_delete(section);
-		return ini;
-	}
 
 	while ((line = sgetline(&data)) != NULL) {
 
