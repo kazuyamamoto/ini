@@ -21,17 +21,71 @@ struct Ini {
 	Section *current;
 };
 
+static int ini_add_section(Ini *ini, Section *section);
+static Section *ini_search_section(const Ini *ini, const char* section_name);
+static Ini *ini_new(void);
+static void ini_parse_first_section(Ini *ini, const char **data);
+static void ini_parse_sections_and_keys(Ini *ini, const char *data);
+
+Ini *ini_parse(const char *d)
+{
+	Ini *ini;
+	const char *data = d;
+
+	if (data == NULL)
+		return NULL;
+
+	if ((ini = ini_new()) == NULL)
+		return NULL;
+
+	ini_parse_first_section(ini, &data);
+	ini_parse_sections_and_keys(ini, data);
+
+	return ini;
+}
+
+void ini_delete(Ini *ini)
+{
+	size_t i;
+
+	if (ini == NULL)
+		return;
+
+	for (i = 0; i < ini->nsections; i++)
+		section_delete(ini->sections[i]);
+
+	free(ini);
+}
+
+const char *ini_get(const Ini *ini, const char *section_name, const char *key_name)
+{
+	Section *section;
+	Key *key;
+
+	if (ini == NULL || section_name == NULL || key_name == NULL) {
+		errno = EINVAL;
+		return NULL;
+	}
+
+	if ((section = ini_search_section(ini, section_name)) == NULL)
+		return NULL;
+
+	if ((key = section_search_key(section, key_name)) == NULL)
+		return NULL;
+
+	return key_get_value(key);
+}
+
 /* Ini オブジェクトにセクションオブジェクトを追加する */
-static int add_section(Ini *ini, Section *section)
+static int ini_add_section(Ini *ini, Section *section)
 {
 	Section **tmp;
 
 	assert(ini != NULL);
 	assert(section != NULL);
 
-	if ((tmp = realloc(ini->sections, sizeof(Section*) * (ini->nsections + 1))) == NULL) {
+	if ((tmp = realloc(ini->sections, sizeof(Section*) * (ini->nsections + 1))) == NULL)
 		return -1;
-	}
 
 	ini->sections = tmp;
 	ini->sections[ini->nsections] = section;
@@ -40,7 +94,7 @@ static int add_section(Ini *ini, Section *section)
 	return 0;
 }
 
-static Section *search_section(const Ini *ini, const char* section_name)
+static Section *ini_search_section(const Ini *ini, const char* section_name)
 {
 	size_t i;
 
@@ -59,9 +113,8 @@ static Section *search_section(const Ini *ini, const char* section_name)
 static Ini *ini_new(void)
 {
 	Ini *ini = malloc(sizeof *ini);
-	if (ini == NULL) {
+	if (ini == NULL)
 		return NULL;
-	}
 
 	ini->nsections = 0;
 	ini->sections = NULL;
@@ -71,7 +124,7 @@ static Ini *ini_new(void)
 }
 
 /* 最初のセクションの解釈 */
-static void parse_first_section(Ini *ini, const char **data)
+static void ini_parse_first_section(Ini *ini, const char **data)
 {
 	char *line = sgetline(data);
 	ini->current = section_parse(line);
@@ -80,12 +133,11 @@ static void parse_first_section(Ini *ini, const char **data)
 	if (ini->current == NULL)
 		return;
 
-	if (add_section(ini, ini->current)) {
+	if (ini_add_section(ini, ini->current))
 		section_delete(ini->current);
-	}
 }
 
-static void parse_sections_and_keys(Ini *ini, const char *data)
+static void ini_parse_sections_and_keys(Ini *ini, const char *data)
 {
 	Key *key;
 	char *line;
@@ -103,7 +155,7 @@ static void parse_sections_and_keys(Ini *ini, const char *data)
 
 		if ((ini->current = section_parse(line)) != NULL) {
 			free(line);
-			if (add_section(ini, ini->current)) {
+			if (ini_add_section(ini, ini->current)) {
 				section_delete(ini->current);
 				return;
 			}
@@ -112,56 +164,4 @@ static void parse_sections_and_keys(Ini *ini, const char *data)
 
 		free(line);
 	}
-}
-
-Ini *ini_parse(const char *d)
-{
-	Ini *ini;
-	const char *data = d;
-
-	if (data == NULL)
-		return NULL;
-
-	if ((ini = ini_new()) == NULL)
-		return NULL;
-
-	parse_first_section(ini, &data);
-	parse_sections_and_keys(ini, data);
-
-	return ini;
-}
-
-void ini_delete(Ini *ini)
-{
-	size_t i;
-
-	if (ini == NULL) {
-		return;
-	}
-
-	for (i = 0; i < ini->nsections; i++) {
-		section_delete(ini->sections[i]);
-	}
-	free(ini);
-}
-
-const char *ini_get(const Ini *ini, const char *section_name, const char *key_name)
-{
-	Section *section;
-	Key *key;
-
-	if (ini == NULL || section_name == NULL || key_name == NULL) {
-		errno = EINVAL;
-		return NULL;
-	}
-
-	if ((section = search_section(ini, section_name)) == NULL) {
-		return NULL;
-	}
-
-	if ((key = section_search_key(section, key_name)) == NULL) {
-		return NULL;
-	}
-
-	return key_get_value(key);
 }
