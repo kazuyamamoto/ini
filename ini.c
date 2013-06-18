@@ -55,22 +55,7 @@ static Section *search_section(const Ini *ini, const char* section_name)
 	return NULL;
 }
 
-/* 空行かどうか */
-static int isblankstr(const char* s)
-{
-	assert(s != NULL);
-
-	while (*s != '\0') {
-		if (!isspacetab(*s)) {
-			return 0;
-		}
-		s++;
-	}
-
-	return 1;
-}
-
-Ini *ini_new(void)
+static Ini *ini_new(void)
 {
 	Ini* ini = malloc(sizeof *ini);
 	if (ini == NULL) {
