@@ -18,6 +18,7 @@
 struct Ini {
 	size_t nsections;
 	Section **sections;
+	Section *current;
 };
 
 /* Ini オブジェクトにセクションオブジェクトを追加する */
@@ -57,41 +58,65 @@ static Section *search_section(const Ini *ini, const char* section_name)
 
 static Ini *ini_new(void)
 {
-	Ini* ini = malloc(sizeof *ini);
+	Ini *ini = malloc(sizeof *ini);
 	if (ini == NULL) {
 		return NULL;
 	}
 
 	ini->nsections = 0;
 	ini->sections = NULL;
+	ini->current = NULL;
+
 	return ini;
 }
 
 /* 最初のセクションの解釈 */
-static Section *parse_first_section(Ini *ini, const char **data)
+static void parse_first_section(Ini *ini, const char **data)
 {
 	char *line = sgetline(data);
-	Section *section = section_parse(line);
+	ini->current = section_parse(line);
 	free(line);
 
-	if (section == NULL) {
-		return NULL;
-	}
+	if (ini->current == NULL)
+		return;
 
-	if (add_section(ini, section)) {
-		section_delete(section);
-		return NULL;
+	if (add_section(ini, ini->current)) {
+		section_delete(ini->current);
 	}
+}
 
-	return section;
+static void parse_sections_and_keys(Ini *ini, const char *data)
+{
+	Key *key;
+	char *line;
+
+	while ((line = sgetline(&data)) != NULL) {
+
+		if ((key = key_parse(line)) != NULL) {
+			free(line);
+			if (section_add_key(ini->current, key)) {
+				key_delete(key);
+				return;
+			}
+			continue;
+		}
+
+		if ((ini->current = section_parse(line)) != NULL) {
+			free(line);
+			if (add_section(ini, ini->current)) {
+				section_delete(ini->current);
+				return;
+			}
+			continue;
+		}
+
+		free(line);
+	}
 }
 
 Ini *ini_parse(const char *d)
 {
 	Ini *ini;
-	char *line;
-	Section *section;
-	Key *key;
 	const char *data = d;
 
 	if (data == NULL)
@@ -100,31 +125,8 @@ Ini *ini_parse(const char *d)
 	if ((ini = ini_new()) == NULL)
 		return NULL;
 
-	if ((section = parse_first_section(ini, &data)) == NULL)
-		return ini;
-
-	while ((line = sgetline(&data)) != NULL) {
-
-		if ((key = key_parse(line)) != NULL) {
-			free(line);
-			if (section_add_key(section, key)) {
-				key_delete(key);
-				return ini;
-			}
-			continue;
-		}
-
-		if ((section = section_parse(line)) != NULL) {
-			free(line);
-			if (add_section(ini, section)) {
-				section_delete(section);
-				return ini;
-			}
-			continue;
-		}
-
-		free(line);
-	}
+	parse_first_section(ini, &data);
+	parse_sections_and_keys(ini, data);
 
 	return ini;
 }
