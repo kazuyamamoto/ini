@@ -76,7 +76,7 @@ Section *section_parse(const char *s)
 	}
 
 	/* セクション名の取り出し */
-	if ((name = strnclone(s + 1, len)) == NULL) {
+	if ((name = snclone(s + 1, len)) == NULL) {
 		return NULL;
 	}
 

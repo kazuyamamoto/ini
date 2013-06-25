@@ -40,7 +40,7 @@ char *sgetline(const char **s)
 	return line;
 }
 
-char *strclone(const char *s)
+char *sclone(const char *s)
 {
 	size_t len;
 	char *clone;
@@ -59,7 +59,7 @@ char *strclone(const char *s)
 	return clone;
 }
 
-char *strnclone(const char *s, size_t len)
+char *snclone(const char *s, size_t len)
 {
 	char *clone;
 

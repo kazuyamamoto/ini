@@ -103,45 +103,45 @@ static void test_sgetline_emptylines(void)
 	PCU_ASSERT_PTR_NULL(line);
 }
 
-static void test_strclone_null(void)
+static void test_sclone_null(void)
 {
-	char* clone = strclone(NULL);
+	char* clone = sclone(NULL);
 	PCU_ASSERT_PTR_NULL(clone);
 }
 
-static void test_strclone_empty(void)
+static void test_sclone_empty(void)
 {
-	char* clone = strclone("");
+	char* clone = sclone("");
 	PCU_ASSERT_PTR_NOT_NULL(clone);
 	PCU_ASSERT_STRING_EQUAL("", clone);
 	free(clone);
 }
 
-static void test_strclone(void)
+static void test_sclone(void)
 {
-	char* clone = strclone("abc");
+	char* clone = sclone("abc");
 	PCU_ASSERT_PTR_NOT_NULL(clone);
 	PCU_ASSERT_STRING_EQUAL("abc", clone);
 	free(clone);
 }
 
-static void test_strnclone_null(void)
+static void test_snclone_null(void)
 {
-	char *clone = strnclone(NULL, 1);
+	char *clone = snclone(NULL, 1);
 	PCU_ASSERT_PTR_NULL(clone);
 }
 
-static void test_strnclone_empty(void)
+static void test_snclone_empty(void)
 {
-	char* clone = strnclone("", 0);
+	char* clone = snclone("", 0);
 	PCU_ASSERT_PTR_NOT_NULL(clone);
 	PCU_ASSERT_STRING_EQUAL("", clone);
 	free(clone);
 }
 
-static void test_strnclone(void)
+static void test_snclone(void)
 {
-	char* clone = strnclone("abc", 2);
+	char* clone = snclone("abc", 2);
 	PCU_ASSERT_PTR_NOT_NULL(clone);
 	PCU_ASSERT_STRING_EQUAL("ab", clone);
 	free(clone);
@@ -155,12 +155,12 @@ PCU_Suite *test_sutil_suite(void)
 		PCU_TEST(test_sgetline_data_null),
 		PCU_TEST(test_sgetline_multilines),
 		PCU_TEST(test_sgetline_emptylines),
-		PCU_TEST(test_strclone_null),
-		PCU_TEST(test_strclone_empty),
-		PCU_TEST(test_strclone),
-		PCU_TEST(test_strnclone_null),
-		PCU_TEST(test_strnclone_empty),
-		PCU_TEST(test_strnclone),
+		PCU_TEST(test_sclone_null),
+		PCU_TEST(test_sclone_empty),
+		PCU_TEST(test_sclone),
+		PCU_TEST(test_snclone_null),
+		PCU_TEST(test_snclone_empty),
+		PCU_TEST(test_snclone),
 	};
 	static PCU_Suite suite = {
 		"test_sutil", tests, sizeof tests / sizeof tests[0]

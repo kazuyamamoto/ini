@@ -29,7 +29,7 @@ char *sgetline(const char** s);
  * 不要になった場合 free() すること。
  * 失敗時には NULL が返り、　errno　が設定される。
  */
-char* strclone(const char* s);
+char* sclone(const char* s);
 
 /**
  * @brief 文字列のクローンを作る。文字数を指定する。
@@ -39,6 +39,6 @@ char* strclone(const char* s);
  * 不要になった場合 free() すること。
  * 失敗時には NULL が返り、　errno　が設定される。
  */
-char* strnclone(const char* s, size_t len);
+char* snclone(const char* s, size_t len);
 
 #endif	/* SUTIL_H */
