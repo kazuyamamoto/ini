@@ -62,10 +62,8 @@ const char *ini_get(const Ini *ini, const char *section_name, const char *key_na
 	Section *section;
 	Key *key;
 
-	if (ini == NULL || section_name == NULL || key_name == NULL) {
-		errno = EINVAL;
+	if (ini == NULL || section_name == NULL || key_name == NULL)
 		return NULL;
-	}
 
 	if ((section = ini_search_section(ini, section_name)) == NULL)
 		return NULL;
@@ -123,13 +121,39 @@ static Ini *ini_new(void)
 	return ini;
 }
 
+/* 空行かどうか？
+ * 空行＝空文字列 or スペースとタブのみ */
+static int is_blank_line(const char *line)
+{
+	int i;
+
+	assert(line != NULL);
+
+	for (i = 0; i < strlen(line); i++) {
+		if (!isspacetab(line[i])) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
 /* 最初のセクションの解釈 */
 static void ini_parse_first_section(Ini *ini, const char **data)
 {
-	char *line = sgetline(data);
+	char *line;
+
+	/* 空行をとばす */
+	while (1) {
+		line = sgetline(data);
+		if (line == NULL)
+			return;
+		if (!is_blank_line(line))
+			break;
+		free(line);
+	}
+
 	ini->current = section_parse(line);
 	free(line);
-
 	if (ini->current == NULL)
 		return;
 
@@ -140,10 +164,11 @@ static void ini_parse_first_section(Ini *ini, const char **data)
 static void ini_parse_sections_and_keys(Ini *ini, const char *data)
 {
 	Key *key;
+	Section *section;
 	char *line;
 
 	while ((line = sgetline(&data)) != NULL) {
-
+		/* キーとして解釈 */
 		if ((key = key_parse(line)) != NULL) {
 			free(line);
 			if (section_add_key(ini->current, key)) {
@@ -153,7 +178,9 @@ static void ini_parse_sections_and_keys(Ini *ini, const char *data)
 			continue;
 		}
 
-		if ((ini->current = section_parse(line)) != NULL) {
+		/* セクションとして解釈 */
+		if ((section = section_parse(line)) != NULL) {
+			ini->current = section;
 			free(line);
 			if (ini_add_section(ini, ini->current)) {
 				section_delete(ini->current);
