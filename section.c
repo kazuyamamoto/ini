@@ -111,14 +111,12 @@ int section_add_key(Section *section, Key *key)
 {
 	Key **tmp;
 
-	if (section == NULL || key == NULL) {
+	if (section == NULL || key == NULL)
 		return -1;
-	}
 
 	tmp = realloc(section->keys, (sizeof *tmp) * (section->nkeys + 1));
-	if (tmp == NULL) {
+	if (tmp == NULL)
 		return -1;
-	}
 
 	section->keys = tmp;
 	section->keys[section->nkeys] = key;
