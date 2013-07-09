@@ -44,9 +44,9 @@ static void test_ini_get_two_keys(void)
 static void test_ini_get_two_sections(void)
 {
 	Ini *ini;
-	const char *value1, *value2;
+	const char *value1, *value2, *value3;
 
-	ini = ini_parse("[section1]\nname1=value1\n[section2]\nname2=value2");
+	ini = ini_parse("[section1]\nname1=value1\n[section2]\nname2=value2\nname3=value3");
 
 	value1 = ini_get(ini, "section1", "name1");
 	PCU_ASSERT_PTR_NOT_NULL(value1);
@@ -55,6 +55,10 @@ static void test_ini_get_two_sections(void)
 	value2 = ini_get(ini, "section2", "name2");
 	PCU_ASSERT_PTR_NOT_NULL(value2);
 	PCU_ASSERT_STRING_EQUAL("value2", value2);
+
+	value3 = ini_get(ini, "section2", "name3");
+	PCU_ASSERT_PTR_NOT_NULL(value3);
+	PCU_ASSERT_STRING_EQUAL("value3", value3);
 
 	ini_delete(ini);
 }
