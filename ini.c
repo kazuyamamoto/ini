@@ -121,9 +121,10 @@ static Ini *ini_new(void)
 	return ini;
 }
 
-/* 空行かどうか？
- * 空行＝空文字列 or スペースとタブのみ */
-static int is_blank_line(const char *line)
+/* 空行かコメント行であることを調べる。
+ * 空行＝空文字列 or スペースとタブのみ。
+ * コメント行＝スペースとタブに続いて;、;に続いて任意の文字 */
+static int isingnorableline(const char *line)
 {
 	int i;
 
@@ -131,10 +132,15 @@ static int is_blank_line(const char *line)
 
 	for (i = 0; i < strlen(line); i++) {
 		if (!isspacetab(line[i])) {
-			return 0;
+			if (line[i] == ';') {
+				return 1; /* コメント行 */
+			} else {
+				return 0;
+			}
 		}
 	}
-	return 1;
+
+	return 1; /* 空行 */
 }
 
 /* 最初のセクションの解釈 */
@@ -147,7 +153,7 @@ static void ini_parse_first_section(Ini *ini, const char **data)
 		line = sgetline(data);
 		if (line == NULL)
 			return;
-		if (!is_blank_line(line))
+		if (!isingnorableline(line))
 			break;
 		free(line);
 	}
@@ -168,6 +174,7 @@ static void ini_parse_sections_and_keys(Ini *ini, const char *data)
 	char *line;
 
 	while ((line = sgetline(&data)) != NULL) {
+
 		/* キーとして解釈 */
 		if ((key = key_parse(line)) != NULL) {
 			free(line);
