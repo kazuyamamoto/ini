@@ -81,12 +81,12 @@ static void test_ini_get_ignore_empty_line(void)
 	ini_delete(ini);
 }
 
-static void test_ini_get_ignore_comment_line(void)
+static void test_ini_get_ignore_spacetab_line(void)
 {
 	Ini *ini;
 	const char *value1, *value2;
 
-	ini = ini_parse(";comment1\n[section]\n;comment2\nname1=value1\n;comment3\n");
+	ini = ini_parse(" \t\n[section]\n \t\nname1=value1\n \t\nname2=value2 \t\n");
 
 	value1 = ini_get(ini, "section", "name1");
 	PCU_ASSERT_PTR_NOT_NULL(value1);
@@ -99,6 +99,31 @@ static void test_ini_get_ignore_comment_line(void)
 	ini_delete(ini);
 }
 
+
+static void test_ini_get_ignore_comment_line(void)
+{
+	Ini *ini;
+	const char *value1, *value2;
+
+	ini = ini_parse(" ;comment1\n[section]\n\t;comment2\nname1=value1\n;comment3\nname2=value2\n;comment4");
+
+	value1 = ini_get(ini, "section", "name1");
+	PCU_ASSERT_PTR_NOT_NULL(value1);
+	PCU_ASSERT_STRING_EQUAL("value1", value1);
+
+	value2 = ini_get(ini, "section", "name2");
+	PCU_ASSERT_PTR_NOT_NULL(value2);
+	PCU_ASSERT_STRING_EQUAL("value2", value2);
+
+	ini_delete(ini);
+}
+
+/* 空行でもコメントでもないが、無効な行がある場合 */
+static void test_ini_get_unknown_line(void)
+{
+	PCU_FAIL("TODO: implement");
+}
+
 PCU_Suite *test_ini_suite(void)
 {
 	static PCU_Test tests[] = {
@@ -107,6 +132,8 @@ PCU_Suite *test_ini_suite(void)
 		PCU_TEST(test_ini_get_two_sections),
 		PCU_TEST(test_ini_get_ignore_empty_line),
 		PCU_TEST(test_ini_get_ignore_comment_line),
+		PCU_TEST(test_ini_get_unknown_line),
+		PCU_TEST(test_ini_get_ignore_spacetab_line),
 	};
 	static PCU_Suite suite = {
 		"test_ini", tests, sizeof tests / sizeof tests[0]
