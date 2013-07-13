@@ -119,9 +119,36 @@ static void test_ini_get_ignore_comment_line(void)
 }
 
 /* 空行でもコメントでもないが、無効な行がある場合 */
-static void test_ini_get_unknown_line(void)
+static void test_ini_get_unknown_line_before_first_section(void)
 {
-	PCU_FAIL("TODO: implement");
+	Ini *ini;
+	const char *value;
+
+	ini = ini_parse("abc");
+
+	value = ini_get(ini, "section", "name");
+	PCU_ASSERT_PTR_NULL(value);
+
+	ini_delete(ini);
+}
+
+/* 空行でもコメントでもないが、無効な行がある場合。
+ * 読めるところまでは読む。 */
+static void test_ini_get_unknown_line_after_first_section(void)
+{
+	Ini *ini;
+	const char *value1, *value2;
+
+	ini = ini_parse("[section]\nname1=value1\nabc\nname2=value2");
+
+	value1 = ini_get(ini, "section", "name1");
+	PCU_ASSERT_PTR_NOT_NULL(value1);
+	PCU_ASSERT_STRING_EQUAL("value1", value1);
+
+	value2 = ini_get(ini, "section", "name2");
+	PCU_ASSERT_PTR_NULL(value2);
+
+	ini_delete(ini);
 }
 
 PCU_Suite *test_ini_suite(void)
@@ -132,8 +159,9 @@ PCU_Suite *test_ini_suite(void)
 		PCU_TEST(test_ini_get_two_sections),
 		PCU_TEST(test_ini_get_ignore_empty_line),
 		PCU_TEST(test_ini_get_ignore_comment_line),
-		PCU_TEST(test_ini_get_unknown_line),
 		PCU_TEST(test_ini_get_ignore_spacetab_line),
+		PCU_TEST(test_ini_get_unknown_line_before_first_section),
+		PCU_TEST(test_ini_get_unknown_line_after_first_section),
 	};
 	static PCU_Suite suite = {
 		"test_ini", tests, sizeof tests / sizeof tests[0]

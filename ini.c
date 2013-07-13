@@ -175,6 +175,9 @@ static void ini_parse_sections_and_keys(Ini *ini, const char *data)
 
 	while ((line = sgetline(&data)) != NULL) {
 
+		if (isingnorableline(line))
+			continue;
+
 		/* キーとして解釈 */
 		if ((key = key_parse(line)) != NULL) {
 			free(line);
@@ -197,5 +200,7 @@ static void ini_parse_sections_and_keys(Ini *ini, const char *data)
 		}
 
 		free(line);
+
+		return; /* 無効な文字列の場合にここまで来る */
 	}
 }
