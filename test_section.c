@@ -55,6 +55,12 @@ void test_section_search_key(void)
 	section_delete(section);
 }
 
+void test_section_parse_spacetab(void)
+{
+	Section *section = section_parse(" \t ");
+	PCU_ASSERT_PTR_NULL(section);
+}
+
 PCU_Suite *test_section_suite(void)
 {
 	static PCU_Test tests[] = {
@@ -64,6 +70,7 @@ PCU_Suite *test_section_suite(void)
 		PCU_TEST(test_section_parse_invalid_char),
 		PCU_TEST(test_section_parse_not_closed),
 		PCU_TEST(test_section_parse_not_opened),
+		PCU_TEST(test_section_parse_spacetab),
 	};
 	static PCU_Suite suite = {
 		"test_section", tests, sizeof tests / sizeof tests[0]

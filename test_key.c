@@ -49,6 +49,12 @@ void test_key_parse_space(void)
 	key_delete(key);
 }
 
+void test_key_parse_spacetab(void)
+{
+	Key *key = key_parse(" \t ");
+	PCU_ASSERT_PTR_NULL(key);
+}
+
 PCU_Suite *test_key_suite(void)
 {
 	static PCU_Test tests[] = {
@@ -58,6 +64,7 @@ PCU_Suite *test_key_suite(void)
 		PCU_TEST(test_key_parse_space),
 		PCU_TEST(test_key_parse_no_name),
 		PCU_TEST(test_key_parse_no_value),
+		PCU_TEST(test_key_parse_spacetab),
 	};
 	static PCU_Suite suite = {
 		"test_key", tests, sizeof tests / sizeof tests[0]
