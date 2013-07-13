@@ -15,12 +15,12 @@ Cで書いています。
 
 # 使い方
 
-test_xxxという名前のファイル以外のソースファイルとヘッダファイルを、
+cutil.c、cutil.h、ini.c、ini.h、key.c、key.h、section.c、section.h、sutil.c、sutil.hを
 ご自分のプロジェクトに取り込んでビルドしてください。
 簡単な使い方は下記のようになります。
 
 	const char *data = "[section]\nname=value";
 	Ini *ini = ini_parse(data);
 	const char *value = ini_get(ini, "section", "name"); /* valueは"value"という文字列を指している */
+	puts(value);
 	ini_delete(ini);
-
