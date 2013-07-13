@@ -21,5 +21,6 @@ test_xxxという名前のファイル以外のソースファイルとヘッダ
 
 	const char *data = "[section]\nname=value";
 	Ini *ini = ini_parse(data);
-	const char *value = ini_get("section", "name");
-	/* valueは"value"という文字列を指している */
+	const char *value = ini_get(ini, "section", "name"); /* valueは"value"という文字列を指している */
+	ini_delete(ini);
+
