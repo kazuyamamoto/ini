@@ -71,35 +71,86 @@ static void test_sgetline_multilines(void)
 	PCU_ASSERT_EQUAL('\0', *data);
 }
 
+/* data が複数行のとき、各行を取得できること。改行がCR。 */
+static void test_sgetline_multilines_cr(void)
+{
+	const char *data = "abc\rdef\rghi";
+	char* line;
+
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("abc", line);
+
+	free(line);
+
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("def", line);
+
+	free(line);
+
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("ghi", line);
+
+	free(line);
+
+	PCU_ASSERT_EQUAL('\0', *data);
+}
+
 /* data が改行のみのとき、空文字列が返ること */
 static void test_sgetline_emptylines(void)
 {
 	const char *data = "\n\n\n";
 	char* line;
 
-	line = sgetline(&data);
-
 	/* 1行め */
+	line = sgetline(&data);
 	PCU_ASSERT_PTR_NOT_NULL(line);
 	PCU_ASSERT_STRING_EQUAL("", line);
-
 	free(line);
-	line = sgetline(&data);
 
 	/* 2行め */
+	line = sgetline(&data);
 	PCU_ASSERT_PTR_NOT_NULL(line);
 	PCU_ASSERT_STRING_EQUAL("", line);
-
 	free(line);
-	line = sgetline(&data);
 
 	/* 3行め */
+	line = sgetline(&data);
 	PCU_ASSERT_PTR_NOT_NULL(line);
 	PCU_ASSERT_STRING_EQUAL("", line);
-
 	free(line);
-	line = sgetline(&data);
 
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NULL(line);
+}
+
+/* data が改行のみのとき、空文字列が返ること。改行がCR。 */
+static void test_sgetline_emptylines_cr(void)
+{
+	const char *data = "\r\r\r";
+	char* line;
+
+	/* 1行め */
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("", line);
+	free(line);
+
+	/* 2行め */
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("", line);
+	free(line);
+
+	/* 3行め */
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("", line);
+	free(line);
+
+	line = sgetline(&data);
 	PCU_ASSERT_PTR_NULL(line);
 }
 
@@ -161,6 +212,8 @@ PCU_Suite *test_sutil_suite(void)
 		PCU_TEST(test_snclone_null),
 		PCU_TEST(test_snclone_empty),
 		PCU_TEST(test_snclone),
+		PCU_TEST(test_sgetline_multilines_cr),
+		PCU_TEST(test_sgetline_emptylines_cr),
 	};
 	static PCU_Suite suite = {
 		"test_sutil", tests, sizeof tests / sizeof tests[0]
