@@ -75,6 +75,25 @@ static void test_ini_get_two_keys_cr(void)
 	ini_delete(ini);
 }
 
+static void test_ini_get_two_keys_cr_lf_mix(void)
+{
+	Ini *ini;
+	const char *value1, *value2;
+
+	ini = ini_parse("[section]\rname1=value1\nname2=value2");
+	PCU_ASSERT_PTR_NOT_NULL(ini);
+
+	value1 = ini_get(ini, "section", "name1");
+	PCU_ASSERT_PTR_NOT_NULL(value1);
+	PCU_ASSERT_STRING_EQUAL("value1", value1);
+
+	value2 = ini_get(ini, "section", "name2");
+	PCU_ASSERT_PTR_NOT_NULL(value2);
+	PCU_ASSERT_STRING_EQUAL("value2", value2);
+
+	ini_delete(ini);
+}
+
 static void test_ini_get_two_sections(void)
 {
 	Ini *ini;
@@ -272,6 +291,7 @@ PCU_Suite *test_ini_suite(void)
 		PCU_TEST(test_ini_get_ignore_spacetab_line_cr),
 		PCU_TEST(test_ini_get_ignore_comment_line_cr),
 		PCU_TEST(test_ini_get_unknown_line_after_first_section_cr),
+		PCU_TEST(test_ini_get_two_keys_cr_lf_mix),
 	};
 	static PCU_Suite suite = {
 		"test_ini", tests, sizeof tests / sizeof tests[0]
