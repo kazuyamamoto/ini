@@ -98,6 +98,33 @@ static void test_sgetline_multilines_cr(void)
 	PCU_ASSERT_EQUAL('\0', *data);
 }
 
+/* data が複数行のとき、各行を取得できること。改行がCRLF。 */
+static void test_sgetline_multilines_crlf(void)
+{
+	const char *data = "abc\r\ndef\r\nghi";
+	char* line;
+
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("abc", line);
+
+	free(line);
+
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("def", line);
+
+	free(line);
+
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("ghi", line);
+
+	free(line);
+
+	PCU_ASSERT_EQUAL('\0', *data);
+}
+
 /* data が改行のみのとき、空文字列が返ること */
 static void test_sgetline_emptylines(void)
 {
@@ -130,6 +157,34 @@ static void test_sgetline_emptylines(void)
 static void test_sgetline_emptylines_cr(void)
 {
 	const char *data = "\r\r\r";
+	char* line;
+
+	/* 1行め */
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("", line);
+	free(line);
+
+	/* 2行め */
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("", line);
+	free(line);
+
+	/* 3行め */
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NOT_NULL(line);
+	PCU_ASSERT_STRING_EQUAL("", line);
+	free(line);
+
+	line = sgetline(&data);
+	PCU_ASSERT_PTR_NULL(line);
+}
+
+/* data が改行のみのとき、空文字列が返ること。改行がCRLF。 */
+static void test_sgetline_emptylines_crlf(void)
+{
+	const char *data = "\r\n\r\n\r\n";
 	char* line;
 
 	/* 1行め */
@@ -214,6 +269,8 @@ PCU_Suite *test_sutil_suite(void)
 		PCU_TEST(test_snclone),
 		PCU_TEST(test_sgetline_multilines_cr),
 		PCU_TEST(test_sgetline_emptylines_cr),
+		PCU_TEST(test_sgetline_multilines_crlf),
+		PCU_TEST(test_sgetline_emptylines_crlf),
 	};
 	static PCU_Suite suite = {
 		"test_sutil", tests, sizeof tests / sizeof tests[0]

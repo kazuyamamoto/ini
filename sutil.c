@@ -36,7 +36,9 @@ char *sgetline(const char **s)
 	memcpy(line, *s - n, n);
 	line[n] = '\0';
 
-	if (**s != '\0')
+	if (**s == '\r' && *(*s + 1) == '\n')
+		*s = *s + 2; /* CRLFの場合の次の行開始位置 */
+	else if (**s != '\0')
 		*s = *s + 1;
 
 	return line;
