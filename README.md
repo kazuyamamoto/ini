@@ -21,6 +21,6 @@ cutil.c、cutil.h、ini.c、ini.h、key.c、key.h、section.c、section.h、suti
 
 	const char *data = "[section]\nname=value";
 	Ini *ini = ini_parse(data);
-	const char *value = ini_get(ini, "section", "name"); /* valueは"value"という文字列を指している */
-	puts(value);
+	const char *value = ini_get(ini, "section", "name");
+	puts(value);    /* value と表示される */
 	ini_delete(ini);
